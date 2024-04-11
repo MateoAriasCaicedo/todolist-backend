@@ -41,9 +41,8 @@ public class UserRepository {
 
     if (user == null) {
       throw new UserDoesNotExistsException(username);
-    } else if (user.getString(UserFields.PASSWORD).equals(password)) {
-      throw new IncorrectPasswordException(
-          user.getString(UserFields.PASSWORD), user.getString(UserFields.USERNAME));
+    } else if (!user.getString(UserFields.PASSWORD).equals(password)) {
+      throw new IncorrectPasswordException(password, user.getString(UserFields.USERNAME));
     }
     return user.getString(UserFields.ID);
   }

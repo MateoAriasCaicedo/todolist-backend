@@ -1,4 +1,4 @@
-package com.codecrafters.todolistbackend.domain.users;
+package com.codecrafters.todolistbackend.exceptions;
 
 public class InvalidPasswordException extends RuntimeException {
 

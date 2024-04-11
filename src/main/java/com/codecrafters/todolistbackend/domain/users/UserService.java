@@ -1,6 +1,8 @@
 package com.codecrafters.todolistbackend.domain.users;
 
+import com.codecrafters.todolistbackend.exceptions.IncorrectPasswordException;
 import com.codecrafters.todolistbackend.exceptions.InvalidEmailException;
+import com.codecrafters.todolistbackend.exceptions.InvalidPasswordException;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import org.springframework.stereotype.Service;
 

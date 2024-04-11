@@ -1,7 +1,10 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
 import com.codecrafters.todolistbackend.db.collections.fields.TaskFields;
+import com.codecrafters.todolistbackend.exceptions.InvalidDateException;
+import com.codecrafters.todolistbackend.exceptions.InvalidTitleException;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
+import java.time.LocalDate;
 import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,6 +24,14 @@ class TaskService {
   }
 
   void addUserTask(ObjectId userID, TaskCreationDTO task) throws UserDoesNotExistsException {
+    LocalDate deadLine = LocalDate.parse(task.dueDate());
+    if (!task.dueDate().matches(TaskValidationRegex.DATE_VALIDATION.validationString) || deadLine.isBefore(
+        LocalDate.now())) {
+      throw new InvalidDateException(task.dueDate());
+    } else if (task.title().isEmpty()) {
+      throw new InvalidTitleException(task.title());
+    }
+
     taskRepository.createUserTask(userID, task);
   }
 

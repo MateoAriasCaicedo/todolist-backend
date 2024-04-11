@@ -1,4 +1,4 @@
-package com.codecrafters.todolistbackend.domain.users;
+package com.codecrafters.todolistbackend.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -5,6 +5,7 @@ import static com.mongodb.client.model.Filters.eq;
 import com.codecrafters.todolistbackend.db.DBCollections;
 import com.codecrafters.todolistbackend.db.DBNames;
 import com.codecrafters.todolistbackend.db.collections.fields.UserFields;
+import com.codecrafters.todolistbackend.exceptions.IncorrectPasswordException;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;

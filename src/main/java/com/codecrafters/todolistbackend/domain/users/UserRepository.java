@@ -12,6 +12,8 @@ import com.mongodb.client.result.InsertOneResult;
 import org.bson.Document;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class UserRepository {
 
@@ -27,11 +29,16 @@ public class UserRepository {
 
   String createUser(UserCreationDTO user) throws UserDoesNotExistsException {
     MongoCollection<Document> userCollection = getUsersCollection();
-    InsertOneResult result = userCollection.insertOne(user.asMongoDocument());
+    InsertOneResult result =
+        userCollection.insertOne(
+            user.asMongoDocument()
+                .append(UserFields.TASKS, List.of())
+                .append(UserFields.CATEGORIES, List.of()));
 
     if (result.getInsertedId() == null) {
       throw new UserAlreadyExistsException(user.email(), user.username());
     }
+
     return result.getInsertedId().asObjectId().getValue().toHexString();
   }
 
@@ -41,10 +48,10 @@ public class UserRepository {
 
     if (user == null) {
       throw new UserDoesNotExistsException(username);
-    } else if (user.getString(UserFields.PASSWORD).equals(password)) {
-      throw new IncorrectPasswordException(
-          user.getString(UserFields.PASSWORD), user.getString(UserFields.USERNAME));
+    } else if (!user.getString(UserFields.PASSWORD).equals(password)) {
+      throw new IncorrectPasswordException(password, user.getString(UserFields.USERNAME));
     }
+
     return user.getString(UserFields.ID);
   }
 }

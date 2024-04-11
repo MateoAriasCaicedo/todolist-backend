@@ -7,13 +7,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 public record UserCreationDTO(
-    String firstName,
-    String lastName,
-    String username,
-    String email,
-    String password,
-    List<Task> tasks,
-    List<String> categories) {
+    String firstName, String lastName, String username, String email, String password) {
 
   Document asMongoDocument() {
     return new Document(UserFields.ID, new ObjectId())
@@ -21,8 +15,6 @@ public record UserCreationDTO(
         .append(UserFields.LAST_NAME, this.lastName)
         .append(UserFields.USERNAME, this.username)
         .append(UserFields.EMAIL, this.email)
-        .append(UserFields.PASSWORD, this.password)
-        .append(UserFields.TASKS, this.tasks)
-        .append(UserFields.CATEGORIES, this.categories);
+        .append(UserFields.PASSWORD, this.password);
   }
 }

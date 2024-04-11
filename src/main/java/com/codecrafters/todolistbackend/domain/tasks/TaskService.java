@@ -1,7 +1,6 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
 import com.codecrafters.todolistbackend.db.collections.fields.TaskFields;
-import com.codecrafters.todolistbackend.events.TaskCreatedEvent;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.util.List;
 import org.bson.types.ObjectId;
@@ -23,7 +22,6 @@ class TaskService {
 
   void addUserTask(ObjectId userID, TaskCreationDTO task) throws UserDoesNotExistsException {
     taskRepository.createUserTask(userID, task);
-    eventPublisher.multicastEvent(new TaskCreatedEvent(this));
   }
 
   void deleteUserTask(ObjectId userID, ObjectId taskID) throws UserDoesNotExistsException {

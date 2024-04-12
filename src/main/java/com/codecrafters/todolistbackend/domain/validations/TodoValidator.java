@@ -16,7 +16,6 @@ public class TodoValidator {
   }
 
   public boolean userHasCategory(ObjectId userID, String category) {
-    List<String> userCategories = categoryController.getAllUserCategories(userID);
-    return userCategories.contains(category);
+    return categoryController.getAllUserCategories(userID).contains(category);
   }
 }

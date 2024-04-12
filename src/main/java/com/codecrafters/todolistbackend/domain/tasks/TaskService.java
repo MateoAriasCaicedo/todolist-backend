@@ -1,11 +1,11 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
 import com.codecrafters.todolistbackend.db.collections.fields.TaskFields;
+import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.time.LocalDate;
 import java.util.List;
 import org.bson.types.ObjectId;
-import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,7 +13,7 @@ class TaskService {
 
   private final TaskRepository taskRepository;
 
-  TaskService(TaskRepository taskRepository, ApplicationEventMulticaster eventPublisher) {
+  TaskService(TaskRepository taskRepository, TodoValidator todoValidator) {
     this.taskRepository = taskRepository;
   }
 
@@ -27,8 +27,6 @@ class TaskService {
     if (task.title().isEmpty()) {
       throw new InvalidTitleException(task.title());
     }
-
-
 
     taskRepository.createUserTask(userID, task);
   }

@@ -9,7 +9,6 @@ import com.codecrafters.todolistbackend.db.indexes.UsersIndex;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoClient;
-
 import java.util.List;
 import org.bson.Document;
 import org.springframework.stereotype.Repository;

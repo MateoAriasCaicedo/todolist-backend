@@ -4,10 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid category")
-public class InvalidTaskCategory extends RuntimeException{
+public class InvalidTaskCategory extends RuntimeException {
 
   InvalidTaskCategory(String category) {
     super("Invalid task category: " + category);
   }
-
 }

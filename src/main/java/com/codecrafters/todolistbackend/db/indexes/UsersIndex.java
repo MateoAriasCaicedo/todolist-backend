@@ -9,8 +9,6 @@ public enum UsersIndex {
   public static final String UNIQUE_EMAIL_INDEX = "uniquePasswordIndex";
 
   public static UsersIndex findViolatedIndex(String exceptionMessage) {
-    return exceptionMessage.contains(UNIQUE_USERNAME_INDEX)
-        ? UNIQUE_USERNAME
-        : UNIQUE_EMAIL;
+    return exceptionMessage.contains(UNIQUE_USERNAME_INDEX) ? UNIQUE_USERNAME : UNIQUE_EMAIL;
   }
 }

@@ -3,6 +3,8 @@ package com.codecrafters.todolistbackend.domain.categories;
 import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/categories")
 class CategoryController {
@@ -21,5 +23,10 @@ class CategoryController {
   @DeleteMapping("/delete/{userID}/{category}")
   void deleteCategory(@PathVariable ObjectId userID, @PathVariable String category) {
     categoryService.deleteUserCategory(userID, category);
+  }
+
+  @GetMapping("/all/{userID}")
+  List<String> getAllUserCategories(@PathVariable ObjectId userID) {
+    return categoryService.getAllUserCategories(userID);
   }
 }

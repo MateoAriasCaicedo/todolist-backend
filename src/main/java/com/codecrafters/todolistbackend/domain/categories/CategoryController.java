@@ -7,11 +7,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
-class CategoryController {
+public class CategoryController {
 
   private final CategoryService categoryService;
 
-  public CategoryController(CategoryService categoryService) {
+  CategoryController(CategoryService categoryService) {
     this.categoryService = categoryService;
   }
 
@@ -26,7 +26,7 @@ class CategoryController {
   }
 
   @GetMapping("/all/{userID}")
-  List<String> getAllUserCategories(@PathVariable ObjectId userID) {
+  public List<String> getAllUserCategories(@PathVariable ObjectId userID) {
     return categoryService.getAllUserCategories(userID);
   }
 }

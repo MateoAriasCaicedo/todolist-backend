@@ -1,12 +1,10 @@
 package com.codecrafters.todolistbackend.domain.users;
 
 import com.codecrafters.todolistbackend.db.collections.fields.UserFields;
-import com.codecrafters.todolistbackend.domain.tasks.Task;
-import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-public record UserCreationDTO(
+record UserCreationDTO(
     String firstName, String lastName, String username, String email, String password) {
 
   Document asMongoDocument() {

@@ -4,15 +4,15 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-public class UserController {
+class UserController {
 
   private final UserService userService;
 
-  public UserController(UserService userService) {
+  UserController(UserService userService) {
     this.userService = userService;
   }
 
-  @PostMapping("/singup")
+  @PostMapping("/singp")
   String signUpUser(@RequestBody UserCreationDTO user) {
     return userService.signUpUser(user);
   }

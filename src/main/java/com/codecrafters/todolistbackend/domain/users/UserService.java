@@ -1,17 +1,14 @@
 package com.codecrafters.todolistbackend.domain.users;
 
-import com.codecrafters.todolistbackend.exceptions.IncorrectPasswordException;
-import com.codecrafters.todolistbackend.exceptions.InvalidEmailException;
-import com.codecrafters.todolistbackend.exceptions.InvalidPasswordException;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+class UserService {
 
   private final UserRepository userRepository;
 
-  public UserService(UserRepository userRepository) {
+  UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
@@ -23,9 +20,11 @@ public class UserService {
 
   String signUpUser(UserCreationDTO user) throws UserAlreadyExistsException {
 
-    if (!user.password().matches(UserValidationRegex.PASSWORD_VALIDATION.validationString)) {
+    if (!user.password().matches(UserValidationRegex.PASSWORD_VALIDATION)) {
       throw new InvalidPasswordException(user.password());
-    } else if (!user.email().matches(UserValidationRegex.EMAIL_VALIDATION.validationString)) {
+    }
+
+    if (!user.email().matches(UserValidationRegex.EMAIL_VALIDATION)) {
       throw new InvalidEmailException(user.email());
     }
 

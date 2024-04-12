@@ -1,13 +1,12 @@
-package com.codecrafters.todolistbackend.exceptions;
+package com.codecrafters.todolistbackend.domain.tasks;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid date")
-public class InvalidDateException extends RuntimeException {
+class InvalidDateException extends RuntimeException {
 
-  public InvalidDateException(String date) {
+  InvalidDateException(String date) {
     super("Invalid date: " + date);
   }
-
 }

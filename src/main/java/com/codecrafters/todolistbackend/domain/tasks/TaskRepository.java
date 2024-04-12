@@ -22,7 +22,7 @@ class TaskRepository {
 
   private final MongoClient mongoClient;
 
-  public TaskRepository(MongoClient mongoClient) {
+  TaskRepository(MongoClient mongoClient) {
     this.mongoClient = mongoClient;
   }
 

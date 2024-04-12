@@ -10,7 +10,8 @@ public class CategoryService {
 
   private final CategoryRepository categoryRepository;
 
-  public CategoryService(CategoryRepository categoryRepository, ApplicationEventPublisher eventPublisher) {
+  public CategoryService(
+      CategoryRepository categoryRepository, ApplicationEventPublisher eventPublisher) {
     this.categoryRepository = categoryRepository;
   }
 

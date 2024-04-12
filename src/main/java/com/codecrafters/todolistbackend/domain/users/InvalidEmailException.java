@@ -1,12 +1,12 @@
-package com.codecrafters.todolistbackend.exceptions;
+package com.codecrafters.todolistbackend.domain.users;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid email")
-public class InvalidEmailException extends RuntimeException {
+class InvalidEmailException extends RuntimeException {
 
-  public InvalidEmailException(String email) {
+  InvalidEmailException(String email) {
     super("Invalid email: " + email);
   }
 }

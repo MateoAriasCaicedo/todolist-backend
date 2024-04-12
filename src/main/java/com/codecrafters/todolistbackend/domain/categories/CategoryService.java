@@ -5,6 +5,8 @@ import org.bson.types.ObjectId;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CategoryService {
 
@@ -25,5 +27,9 @@ public class CategoryService {
 
   void deleteUserCategory(ObjectId userID, String category) throws UserDoesNotExistsException {
     categoryRepository.deleteUserCategory(userID, category);
+  }
+
+  List<String> getAllUserCategories(ObjectId userID) throws UserDoesNotExistsException {
+    return categoryRepository.getAllUserCategories(userID);
   }
 }

@@ -8,7 +8,7 @@ public class TaskFields {
 
   public static final String DESCRIPTION = "description";
 
-  public static final String DUE_DATE = "due_date";
+  public static final String DUE_DATE = "dueDate";
 
   public static final String CATEGORY = "category";
 

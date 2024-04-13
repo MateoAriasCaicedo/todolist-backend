@@ -1,9 +1,8 @@
 package com.codecrafters.todolistbackend.domain.categories;
 
+import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/categories")

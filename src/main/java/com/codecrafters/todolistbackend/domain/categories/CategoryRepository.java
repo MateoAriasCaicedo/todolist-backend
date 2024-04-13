@@ -8,11 +8,10 @@ import com.codecrafters.todolistbackend.db.filters.DBFilters;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.model.Updates;
-import org.bson.types.ObjectId;
-import org.springframework.stereotype.Repository;
-
 import java.util.LinkedList;
 import java.util.List;
+import org.bson.types.ObjectId;
+import org.springframework.stereotype.Repository;
 
 @Repository
 class CategoryRepository {

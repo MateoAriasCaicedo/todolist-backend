@@ -9,5 +9,4 @@ public class UserAlreadyExistsException extends RuntimeException {
   public UserAlreadyExistsException(String userName, String email) {
     super("User username or email already exists: " + userName + ", " + email);
   }
-
 }

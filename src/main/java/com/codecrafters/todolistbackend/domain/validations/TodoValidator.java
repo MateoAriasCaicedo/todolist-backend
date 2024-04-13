@@ -4,8 +4,6 @@ import com.codecrafters.todolistbackend.domain.categories.CategoryController;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class TodoValidator {
 
@@ -16,7 +14,6 @@ public class TodoValidator {
   }
 
   public boolean userHasCategory(ObjectId userID, String category) {
-    List<String> userCategories = categoryController.getAllUserCategories(userID);
-    return userCategories.contains(category);
+    return categoryController.getAllUserCategories(userID).contains(category);
   }
 }

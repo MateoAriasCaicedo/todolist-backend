@@ -12,7 +12,7 @@ class UserController {
     this.userService = userService;
   }
 
-  @PostMapping("/singp")
+  @PostMapping("/singup")
   String signUpUser(@RequestBody UserCreationDTO user) {
     return userService.signUpUser(user);
   }

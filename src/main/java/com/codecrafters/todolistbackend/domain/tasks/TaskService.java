@@ -6,6 +6,7 @@ import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.time.LocalDate;
 import java.util.List;
 import org.bson.types.ObjectId;
+import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,8 +15,10 @@ class TaskService {
   private final TaskRepository taskRepository;
   private final TodoValidator todoValidator;
 
-  TaskService(TaskRepository taskRepository, TodoValidator todoValidator) {
-
+  TaskService(
+      TaskRepository taskRepository,
+      ApplicationEventMulticaster eventPublisher,
+      TodoValidator todoValidator) {
     this.taskRepository = taskRepository;
     this.todoValidator = todoValidator;
   }

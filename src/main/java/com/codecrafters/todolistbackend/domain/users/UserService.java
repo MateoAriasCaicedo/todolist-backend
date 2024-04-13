@@ -18,7 +18,11 @@ class UserService {
     return userRepository.findUser(username, password);
   }
 
-  String signUpUser(UserCreationDTO user) throws UserAlreadyExistsException {
+  String signUpUser(UserCreationDTO user)
+      throws InvalidPasswordException,
+          InvalidEmailException,
+          UsernameAlreadyExists,
+          EmailAlreadyExists {
 
     if (!user.password().matches(UserValidationRegex.PASSWORD_VALIDATION)) {
       throw new InvalidPasswordException(user.password());

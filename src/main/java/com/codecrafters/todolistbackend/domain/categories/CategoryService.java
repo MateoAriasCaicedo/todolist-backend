@@ -16,7 +16,7 @@ public class CategoryService {
     this.categoryRepository = categoryRepository;
   }
 
-  void createUserCategory(ObjectId userID, String category)
+  public void createUserCategory(ObjectId userID, String category)
       throws UserDoesNotExistsException, EmptyCategoryException {
 
     if (category.isEmpty()) throw new EmptyCategoryException(category);
@@ -24,11 +24,12 @@ public class CategoryService {
     categoryRepository.createUserCategory(userID, category);
   }
 
-  void deleteUserCategory(ObjectId userID, String category) throws UserDoesNotExistsException {
+  public void deleteUserCategory(ObjectId userID, String category)
+      throws UserDoesNotExistsException {
     categoryRepository.deleteUserCategory(userID, category);
   }
 
-  List<String> getAllUserCategories(ObjectId userID) throws UserDoesNotExistsException {
+  public List<String> getAllUserCategories(ObjectId userID) throws UserDoesNotExistsException {
     return categoryRepository.getAllUserCategories(userID);
   }
 }

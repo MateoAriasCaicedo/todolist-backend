@@ -2,64 +2,72 @@ package com.codecrafters.todolistbackend.domain.users;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import com.codecrafters.todolistbackend.db.DBCollections;
-import com.codecrafters.todolistbackend.db.DBNames;
+import com.codecrafters.todolistbackend.db.collections.CollectionsProvider;
 import com.codecrafters.todolistbackend.db.collections.fields.UserFields;
+import com.codecrafters.todolistbackend.db.filters.DBFilter;
 import com.codecrafters.todolistbackend.db.indexes.UsersIndex;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoClient;
 import java.util.List;
+import java.util.Optional;
+
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@AllArgsConstructor
+@Slf4j
 class UserRepository {
 
   private final MongoClient mongoClient;
 
-  UserRepository(MongoClient mongoClient) {
-    this.mongoClient = mongoClient;
-  }
+  private final CollectionsProvider collectionsProvider;
 
-  String createUser(UserCreationDTO user) throws UserDoesNotExistsException {
+  String createUser(UserCreationDTO user) throws UsernameAlreadyExists, EmailAlreadyExists {
+    log.info("Creating a user with userName: {}", user.userName());
+
+    var userDocument =
+        user.asMongoDocument()
+            .append(UserFields.TASKS, List.of())
+            .append(UserFields.CATEGORIES, List.of());
+
     try {
-      return mongoClient
-          .getDatabase(DBNames.TODO)
-          .getCollection(DBCollections.USERS)
-          .insertOne(
-              user.asMongoDocument()
-                  .append(UserFields.TASKS, List.of())
-                  .append(UserFields.CATEGORIES, List.of()))
-          .getInsertedId()
-          .asObjectId()
-          .getValue()
-          .toHexString();
-    } catch (MongoWriteException exception) {
-      switch (UsersIndex.findViolatedIndex(exception.getMessage())) {
+      var insertedUser = collectionsProvider.usersCollection().insertOne(userDocument);
+      return insertedUser.getInsertedId().asObjectId().getValue().toHexString();
+
+    } catch (MongoWriteException indexViolatedException) {
+      Optional<UsersIndex> violatedIndex =
+          UsersIndex.findViolatedIndex(indexViolatedException.getMessage());
+
+      if (violatedIndex.isEmpty()) {
+        throw new RuntimeException("Unexpected database error.");
+      }
+
+      switch (violatedIndex.get()) {
         case UNIQUE_USERNAME -> throw new UsernameAlreadyExists();
         case UNIQUE_EMAIL -> throw new EmailAlreadyExists();
-        default -> throw new RuntimeException("Unexpected side error");
+        default -> throw new RuntimeException("Unexpected violation");
       }
     }
   }
 
   String findUser(String username, String password) throws UserDoesNotExistsException {
+    log.info("logging in user with username: {} ", username);
+
     Document user =
-        mongoClient
-            .getDatabase(DBNames.TODO)
-            .getCollection(DBCollections.USERS)
-            .find(eq(UserFields.USERNAME, username))
-            .first();
+        collectionsProvider.usersCollection().find(DBFilter.equalUsernameFilter(username)).first();
 
     if (user == null) {
       throw new UserDoesNotExistsException(username);
     }
 
     if (!user.getString(UserFields.PASSWORD).equals(password)) {
-      throw new IncorrectPasswordException(password, user.getString(UserFields.USERNAME));
+      throw new IncorrectPasswordException(password, username);
     }
 
-    return user.getString(UserFields.ID);
+    return user.getObjectId(UserFields.ID).toHexString();
   }
 }

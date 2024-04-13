@@ -4,11 +4,11 @@ import static com.mongodb.client.model.Filters.eq;
 
 import com.codecrafters.todolistbackend.db.collections.CollectionsProvider;
 import com.codecrafters.todolistbackend.db.collections.fields.UserFields;
-import com.codecrafters.todolistbackend.db.filters.DBFilter;
+import com.codecrafters.todolistbackend.db.filters.DBFilters;
 import com.codecrafters.todolistbackend.db.indexes.UsersIndex;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.MongoWriteException;
-import com.mongodb.client.MongoClient;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +21,6 @@ import org.springframework.stereotype.Repository;
 @AllArgsConstructor
 @Slf4j
 class UserRepository {
-
-  private final MongoClient mongoClient;
 
   private final CollectionsProvider collectionsProvider;
 
@@ -58,7 +56,7 @@ class UserRepository {
     log.info("logging in user with username: {} ", username);
 
     Document user =
-        collectionsProvider.usersCollection().find(DBFilter.equalUsernameFilter(username)).first();
+        collectionsProvider.usersCollection().find(DBFilters.equalUsernameFilter(username)).first();
 
     if (user == null) {
       throw new UserDoesNotExistsException(username);

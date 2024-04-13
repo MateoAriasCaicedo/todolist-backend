@@ -6,7 +6,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 record Task(
-    ObjectId id,
+    String id,
     String title,
     String description,
     String dueDate,
@@ -16,7 +16,7 @@ record Task(
 
   static Task fromDocument(Document document) {
     return new Task(
-        document.get(TaskFields.ID, ObjectId.class),
+        document.getObjectId(TaskFields.ID).toHexString(),
         document.get(TaskFields.TITLE, String.class),
         document.get(TaskFields.DESCRIPTION, String.class),
         document.get(TaskFields.DUE_DATE, String.class),

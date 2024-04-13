@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class InvalidTaskCategory extends RuntimeException {
 
   InvalidTaskCategory(String category) {
-    super("Invalid task category: " + category);
+    super("The user has not the specified task category: " + category);
   }
 }

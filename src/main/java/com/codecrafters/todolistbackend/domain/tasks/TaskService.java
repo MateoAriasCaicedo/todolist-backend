@@ -5,25 +5,20 @@ import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.time.LocalDate;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.context.event.ApplicationEventMulticaster;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 class TaskService {
 
   private final TaskRepository taskRepository;
+
   private final TodoValidator todoValidator;
 
-  TaskService(
-      TaskRepository taskRepository,
-      ApplicationEventMulticaster eventPublisher,
-      TodoValidator todoValidator) {
-    this.taskRepository = taskRepository;
-    this.todoValidator = todoValidator;
-  }
-
-  void addUserTask(ObjectId userID, TaskCreationDTO task) throws UserDoesNotExistsException {
+  String addUserTask(ObjectId userID, TaskCreationDTO task) throws UserDoesNotExistsException {
 
     if (!task.dueDate().matches(TaskValidationRegex.DATE_VALIDATION)
         || LocalDate.parse(task.dueDate()).isBefore(LocalDate.now())) {
@@ -38,7 +33,7 @@ class TaskService {
       throw new InvalidTaskCategory(task.category());
     }
 
-    taskRepository.createUserTask(userID, task);
+    return taskRepository.createUserTask(userID, task);
   }
 
   void deleteUserTask(ObjectId userID, ObjectId taskID) throws UserDoesNotExistsException {

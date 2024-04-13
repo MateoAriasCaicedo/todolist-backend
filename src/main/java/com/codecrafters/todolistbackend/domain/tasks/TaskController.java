@@ -22,13 +22,39 @@ class TaskController {
   }
 
   @PostMapping("/add/{userID}")
-  void addUserTask(@PathVariable ObjectId userID, @RequestBody TaskCreationDTO task) {
-    taskService.addUserTask(userID, task);
+  String addUserTask(@PathVariable ObjectId userID, @RequestBody TaskCreationDTO task) {
+    return taskService.addUserTask(userID, task);
   }
 
   @PutMapping("/complete/{userID}/{taskID}")
   void completeUserTask(@PathVariable ObjectId userID, @PathVariable ObjectId taskID) {
     taskService.completeUserTask(userID, taskID);
+  }
+
+  @PutMapping("/update/title/{userID}/{taskID}")
+  void updateUserTaskTitle(
+      @PathVariable ObjectId userID, @PathVariable ObjectId taskID, @RequestBody String title) {
+    taskService.updateTitleUserTask(userID, taskID, title);
+  }
+
+  @PutMapping("/update/description/{userID}/{taskID}/{description}")
+  void updateUserTaskDescription(
+      @PathVariable ObjectId userID,
+      @PathVariable ObjectId taskID,
+      @PathVariable String description) {
+    taskService.updateDescriptionUserTask(userID, taskID, description);
+  }
+
+  @PutMapping("/update/duedate/{userID}/{taskID}/{dueDate}")
+  void updateUserTaskDueDate(
+      @PathVariable ObjectId userID, @PathVariable ObjectId taskID, @PathVariable String dueDate) {
+    taskService.updateDescriptionUserTask(userID, taskID, dueDate);
+  }
+
+  @PutMapping("/update/category/{userID}/{taskID}/{category}")
+  void updateUserTaskCategory(
+      @PathVariable ObjectId userID, @PathVariable ObjectId taskID, @PathVariable String category) {
+    taskService.updateCategoryUserTask(userID, taskID, category);
   }
 
   @DeleteMapping("/delete/{userID}/{taskID}")

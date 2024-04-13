@@ -1,20 +1,20 @@
 package com.codecrafters.todolistbackend.domain.categories;
 
+import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class CategoryService {
 
-  private final CategoryRepository categoryRepository;
+  private final TodoValidator todoValidator;
 
-  public CategoryService(
-      CategoryRepository categoryRepository, ApplicationEventPublisher eventPublisher) {
-    this.categoryRepository = categoryRepository;
-  }
+  private final CategoryRepository categoryRepository;
 
   public void createUserCategory(ObjectId userID, String category)
       throws UserDoesNotExistsException, EmptyCategoryException {
@@ -26,6 +26,11 @@ public class CategoryService {
 
   public void deleteUserCategory(ObjectId userID, String category)
       throws UserDoesNotExistsException {
+
+    if (!todoValidator.userHasCategory(userID, category)) {
+      throw new CategoryDoesNotExistsException();
+    }
+
     categoryRepository.deleteUserCategory(userID, category);
   }
 

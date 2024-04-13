@@ -14,7 +14,7 @@ class CategoryController {
     this.categoryService = categoryService;
   }
 
-  @PutMapping("/create/{userID}/{category}")
+  @PostMapping("/create/{userID}/{category}")
   void createCategory(@PathVariable ObjectId userID, @PathVariable String category) {
     categoryService.createUserCategory(userID, category);
   }

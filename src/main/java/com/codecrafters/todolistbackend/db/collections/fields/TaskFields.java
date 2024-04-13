@@ -12,6 +12,8 @@ public class TaskFields {
 
   public static final String CATEGORY = "category";
 
+  public static final String FULLY_QUALIFIED_CATEGORY = "tasks.category";
+
   public static final String COMPLETED = "completed";
 
   public static final String TAGS = "tags";

@@ -19,6 +19,10 @@ public class DBFilters {
     return Filters.eq(UserFields.USERNAME, userName);
   }
 
+  public static Bson tasksCategoryFilter(String category) {
+    return Filters.eq(TaskFields.FULLY_QUALIFIED_CATEGORY, category);
+  }
+
   public static Bson equalTaskID(Object taskID) {
     return Filters.eq(TaskFields.ID, taskID);
   }

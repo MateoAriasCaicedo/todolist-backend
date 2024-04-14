@@ -86,7 +86,8 @@ class TaskRepository {
         collectionsProvider
             .usersCollection()
             .updateOne(
-                equalTaskIDFilter(userID), Updates.pull("tasks", new Document("_id", taskID)));
+                equalTaskIDFilter(userID),
+                Updates.pull(UserFields.TASKS, new Document(TaskFields.ID, taskID)));
 
     if (updatedTasks.getModifiedCount() < 1) {
       throw new UserDoesNotExistsException(userID);

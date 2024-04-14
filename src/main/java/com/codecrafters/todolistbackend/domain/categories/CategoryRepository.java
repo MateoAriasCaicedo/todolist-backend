@@ -27,13 +27,10 @@ class CategoryRepository {
 
   private final CollectionsProvider collectionsProvider;
 
-  private final MongoClient mongoClient;
-
   void createUserCategory(ObjectId userID, String category) throws UserDoesNotExistsException {
     var modifiedUsers =
-        mongoClient
-            .getDatabase(DBNames.TODO)
-            .getCollection(DBCollections.USERS)
+        collectionsProvider
+            .usersCollection()
             .updateOne(
                 DBFilters.equalUserID(userID), Updates.push(UserFields.CATEGORIES, category));
 
@@ -48,24 +45,26 @@ class CategoryRepository {
             .updateOne(
                 DBFilters.equalUserID(userID), Updates.pull(UserFields.CATEGORIES, category));
 
+    if (modifiedUsers.getModifiedCount() == 0) throw new UserDoesNotExistsException(userID);
+
+    deleteTasksByCategory(category);
+  }
+
+  void deleteTasksByCategory(String category) throws UserDoesNotExistsException {
+
     collectionsProvider
         .usersCollection()
         .updateOne(
-            Filters.and(
-                Filters.eq(UserFields.ID, userID),
-                Filters.eq(TaskFields.FULLY_QUALIFIED_CATEGORY, category)),
+            DBFilters.tasksCategoryFilter(category),
             Updates.pull(UserFields.TASKS, new Document(TaskFields.CATEGORY, category)));
-
-    if (modifiedUsers.getModifiedCount() == 0) throw new UserDoesNotExistsException(userID);
   }
 
   List<String> getAllUserCategories(ObjectId userID) throws UserDoesNotExistsException {
     List<String> userCategories = new LinkedList<>();
 
     var user =
-        mongoClient
-            .getDatabase(DBNames.TODO)
-            .getCollection(DBCollections.USERS)
+        collectionsProvider
+            .usersCollection()
             .find(DBFilters.equalUserID(userID))
             .first();
 
@@ -76,9 +75,8 @@ class CategoryRepository {
     userCategories.addAll(user.getList(UserFields.CATEGORIES, String.class));
 
     var defaultCategories =
-        mongoClient
-            .getDatabase(DBNames.TODO)
-            .getCollection(DBCollections.DEFAULT_CATEGORIES)
+        collectionsProvider
+            .getDefaultCategoriesCollection()
             .find()
             .first();
 

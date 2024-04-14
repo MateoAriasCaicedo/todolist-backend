@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class CategoryService {
 
-  private final TodoValidator todoValidator;
-
   private final CategoryRepository categoryRepository;
 
   public void createUserCategory(ObjectId userID, String category)
@@ -24,10 +22,14 @@ public class CategoryService {
     categoryRepository.createUserCategory(userID, category);
   }
 
+  boolean userHasCategory(ObjectId userID, String category) {
+    return getAllUserCategories(userID).contains(category);
+  }
+
   public void deleteUserCategory(ObjectId userID, String category)
       throws UserDoesNotExistsException {
 
-    if (!todoValidator.userHasCategory(userID, category)) {
+    if (!userHasCategory(userID, category)) {
       throw new CategoryDoesNotExistsException();
     }
 

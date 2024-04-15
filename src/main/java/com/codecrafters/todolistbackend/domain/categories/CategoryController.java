@@ -1,18 +1,17 @@
 package com.codecrafters.todolistbackend.domain.categories;
 
 import java.util.List;
+
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/categories")
+@RequiredArgsConstructor
 class CategoryController {
 
   private final CategoryService categoryService;
-
-  CategoryController(CategoryService categoryService) {
-    this.categoryService = categoryService;
-  }
 
   @PostMapping("/create/{userID}/{category}")
   void createCategory(@PathVariable ObjectId userID, @PathVariable String category) {
@@ -25,7 +24,7 @@ class CategoryController {
   }
 
   @GetMapping("/all/{userID}")
-  public List<String> getAllUserCategories(@PathVariable ObjectId userID) {
+  List<String> getAllUserCategories(@PathVariable ObjectId userID) {
     return categoryService.getAllUserCategories(userID);
   }
 }

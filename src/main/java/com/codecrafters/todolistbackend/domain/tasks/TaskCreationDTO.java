@@ -1,6 +1,6 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
-import com.codecrafters.todolistbackend.db.collections.fields.TaskFields;
+import com.codecrafters.todolistbackend.database.fields.TaskFields;
 import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;

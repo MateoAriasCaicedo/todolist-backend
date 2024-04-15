@@ -1,9 +1,8 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
-import com.codecrafters.todolistbackend.db.collections.fields.TaskFields;
+import com.codecrafters.todolistbackend.database.fields.TaskFields;
 import java.util.List;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 record Task(
     String id,
@@ -23,9 +22,5 @@ record Task(
         document.get(TaskFields.CATEGORY, String.class),
         document.get(TaskFields.COMPLETED, Boolean.class),
         document.getList(TaskFields.TAGS, String.class));
-  }
-
-  TaskCreationDTO asCompletedTaskCreationDTO() {
-    return new TaskCreationDTO(title, description, dueDate, category, completed, tags);
   }
 }

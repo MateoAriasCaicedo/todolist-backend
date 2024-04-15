@@ -1,6 +1,5 @@
 package com.codecrafters.todolistbackend.domain.categories;
 
-import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.util.List;
 

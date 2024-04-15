@@ -1,6 +1,6 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
-import com.codecrafters.todolistbackend.db.collections.fields.TaskFields;
+import com.codecrafters.todolistbackend.database.fields.TaskFields;
 import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ class TaskService {
 
   String addUserTask(ObjectId userID, TaskCreationDTO task) throws UserDoesNotExistsException {
 
-    if (!task.dueDate().matches(TaskValidationRegex.DATE_VALIDATION)
+    if (!task.dueDate().matches(TaskValidationRegex.DATE_FORMAT_VALIDATION)
         || LocalDate.parse(task.dueDate()).isBefore(LocalDate.now())) {
       throw new InvalidDateException(task.dueDate());
     }
@@ -62,7 +62,7 @@ class TaskService {
   void updateDueDateUserTask(ObjectId userID, ObjectId taskID, String dueDate)
       throws UserDoesNotExistsException {
 
-    if (!dueDate.matches(TaskValidationRegex.DATE_VALIDATION)
+    if (!dueDate.matches(TaskValidationRegex.DATE_FORMAT_VALIDATION)
         || LocalDate.parse(dueDate).isBefore(LocalDate.now())) {
       throw new InvalidDateException(dueDate);
     }

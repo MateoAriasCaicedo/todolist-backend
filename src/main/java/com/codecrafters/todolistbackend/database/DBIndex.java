@@ -1,8 +1,10 @@
-package com.codecrafters.todolistbackend.db.indexes;
+package com.codecrafters.todolistbackend.database;
+
+import com.mongodb.MongoWriteException;
 
 import java.util.Optional;
 
-public enum UsersIndex {
+public enum DBIndex {
   UNIQUE_USERNAME,
   UNIQUE_EMAIL;
 
@@ -10,7 +12,9 @@ public enum UsersIndex {
 
   public static final String UNIQUE_EMAIL_INDEX = "uniqueEmailIndex";
 
-  public static Optional<UsersIndex> findViolatedIndex(String exceptionMessage) {
+  public static Optional<DBIndex> findViolatedIndex(MongoWriteException exception) {
+    var exceptionMessage = exception.getMessage();
+
     if (exceptionMessage.contains(UNIQUE_USERNAME_INDEX)) {
       return Optional.of(UNIQUE_USERNAME);
     }

@@ -1,6 +1,6 @@
 package com.codecrafters.todolistbackend.domain.users;
 
-import com.codecrafters.todolistbackend.db.collections.fields.UserFields;
+import com.codecrafters.todolistbackend.database.fields.UserFields;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 

@@ -2,10 +2,10 @@ package com.codecrafters.todolistbackend.domain.users;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import com.codecrafters.todolistbackend.db.collections.CollectionsProvider;
-import com.codecrafters.todolistbackend.db.collections.fields.UserFields;
-import com.codecrafters.todolistbackend.db.filters.DBFilters;
-import com.codecrafters.todolistbackend.db.indexes.UsersIndex;
+import com.codecrafters.todolistbackend.database.CollectionsProvider;
+import com.codecrafters.todolistbackend.database.fields.UserFields;
+import com.codecrafters.todolistbackend.database.FiltersProvider;
+import com.codecrafters.todolistbackend.database.DBIndex;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.MongoWriteException;
 
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 class UserRepository {
 
-  private final CollectionsProvider collectionsProvider;
+  private final CollectionsProvider CollectionsProvider;
 
   String createUser(UserCreationDTO user) throws UsernameAlreadyExists, EmailAlreadyExists {
     log.info("Creating a user with userName: {}", user.userName());
@@ -33,12 +33,11 @@ class UserRepository {
             .append(UserFields.CATEGORIES, List.of());
 
     try {
-      var insertedUser = collectionsProvider.usersCollection().insertOne(userDocument);
+      var insertedUser = CollectionsProvider.users().insertOne(userDocument);
       return insertedUser.getInsertedId().asObjectId().getValue().toHexString();
 
-    } catch (MongoWriteException indexViolatedException) {
-      Optional<UsersIndex> violatedIndex =
-          UsersIndex.findViolatedIndex(indexViolatedException.getMessage());
+    } catch (MongoWriteException exception) {
+      Optional<DBIndex> violatedIndex = DBIndex.findViolatedIndex(exception);
 
       if (violatedIndex.isEmpty()) {
         throw new RuntimeException("Unexpected database error.");
@@ -56,7 +55,7 @@ class UserRepository {
     log.info("logging in user with username: {} ", username);
 
     Document user =
-        collectionsProvider.usersCollection().find(DBFilters.equalUsernameFilter(username)).first();
+        CollectionsProvider.users().find(FiltersProvider.equalUsernameFilter(username)).first();
 
     if (user == null) {
       throw new UserDoesNotExistsException(username);

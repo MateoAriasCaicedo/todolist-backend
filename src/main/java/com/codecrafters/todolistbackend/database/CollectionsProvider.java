@@ -11,7 +11,7 @@ public class CollectionsProvider {
 
   private static final String TODO_DB = "todo";
 
-  private static final String USERS_COLLECTION = "";
+  private static final String USERS_COLLECTION = "users";
 
   private static final String DEFAULT_CATEGORIES_COLLECTION = "defaultCategories";
 

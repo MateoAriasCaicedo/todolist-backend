@@ -14,7 +14,7 @@ class UserController {
   }
 
   @PostMapping("/singup")
-  String signUpUser(@RequestBody UserCreationDTO user) {
+  CreatedUserDTO signUpUser(@RequestBody UserCreationDTO user) {
     return userService.signUpUser(user);
   }
 

@@ -9,11 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DBConfig {
 
-  @Value("${spring.data.mongodb.uri}")
-  private String dbUrl;
+  @Value("${application.database.url}")
+  private static String dbUrl;
 
-  /** The database client for the todoapp database. */
-  @Bean(name = "todoMongoClient")
+  @Bean
   public MongoClient mongoClient() {
     return MongoClients.create(dbUrl);
   }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-record TaskCreationDTO(
+public record TaskCreationDTO(
     String title,
     String description,
     String dueDate,

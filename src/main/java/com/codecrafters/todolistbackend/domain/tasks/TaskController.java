@@ -1,43 +1,50 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
+import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import java.util.List;
 import org.bson.types.ObjectId;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/tasks")
-class TaskController {
+public class TaskController {
 
   private final TaskService taskService;
 
-  TaskController(TaskService taskService) {
-    this.taskService = taskService;
+  public TaskController() {
+    this.taskService = new TaskService(new TaskRepository(), new TodoValidator());
   }
 
-  @PostMapping("/add/{userID}")
-  void addUserTask(@PathVariable ObjectId userID, @RequestBody TaskCreationDTO task) {
-    taskService.addUserTask(userID, task);
+  public String addUserTask(ObjectId userID, TaskCreationDTO task) {
+    return taskService.addUserTask(userID, task);
   }
 
-  @PutMapping("/complete/{userID}/{taskID}")
-  void completeUserTask(@PathVariable ObjectId userID, @PathVariable ObjectId taskID) {
+  public void completeUserTask(ObjectId userID, ObjectId taskID) {
     taskService.completeUserTask(userID, taskID);
   }
 
-  @DeleteMapping("/delete/{userID}/{taskID}")
-  void deleteUserTask(@PathVariable ObjectId userID, @PathVariable ObjectId taskID) {
+  void updateUserTaskTitle(ObjectId userID, ObjectId taskID, String title) {
+    taskService.updateTitleUserTask(userID, taskID, title);
+  }
+
+  void updateUserTaskDescription(ObjectId userID, ObjectId taskID, String description) {
+    taskService.updateDescriptionUserTask(userID, taskID, description);
+  }
+
+  public void updateUserTaskDueDate(ObjectId userID, ObjectId taskID, String dueDate) {
+    taskService.updateDescriptionUserTask(userID, taskID, dueDate);
+  }
+
+  public void updateUserTaskCategory(ObjectId userID, ObjectId taskID, String category) {
+    taskService.updateCategoryUserTask(userID, taskID, category);
+  }
+
+  public void deleteUserTask(ObjectId userID, ObjectId taskID) {
     taskService.deleteUserTask(userID, taskID);
   }
 
-  @GetMapping("/all/{userID}")
-  List<Task> getAllUserTasks(@PathVariable ObjectId userID) {
+  public List<Task> getAllUserTasks(ObjectId userID) {
     return taskService.getAllUserTasks(userID);
+  }
+
+  public List<Task> getCompleteTasks(ObjectId userID) {
+    return taskService.getCompleteTasks(userID);
   }
 }

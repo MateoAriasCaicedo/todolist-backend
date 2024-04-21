@@ -1,41 +1,42 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
-import com.codecrafters.todolistbackend.db.collections.fields.TaskFields;
+import com.codecrafters.todolistbackend.database.fields.TaskFields;
+import com.codecrafters.todolistbackend.domain.tasks.exceptions.InvalidDateFormatException;
+import com.codecrafters.todolistbackend.domain.tasks.exceptions.InvalidTaskCategory;
+import com.codecrafters.todolistbackend.domain.tasks.exceptions.EmptyTaskTitleException;
 import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.time.LocalDate;
 import java.util.List;
 import org.bson.types.ObjectId;
-import org.springframework.stereotype.Service;
 
-@Service
 class TaskService {
 
   private final TaskRepository taskRepository;
+
   private final TodoValidator todoValidator;
 
-  TaskService(TaskRepository taskRepository, TodoValidator todoValidator) {
-
+  public TaskService(TaskRepository taskRepository, TodoValidator todoValidator) {
     this.taskRepository = taskRepository;
     this.todoValidator = todoValidator;
   }
 
-  void addUserTask(ObjectId userID, TaskCreationDTO task) throws UserDoesNotExistsException {
+  String addUserTask(ObjectId userID, TaskCreationDTO task) throws UserDoesNotExistsException {
 
-    if (!task.dueDate().matches(TaskValidationRegex.DATE_VALIDATION)
+    if (!task.dueDate().matches(TaskValidationRegex.DATE_FORMAT_VALIDATION)
         || LocalDate.parse(task.dueDate()).isBefore(LocalDate.now())) {
-      throw new InvalidDateException(task.dueDate());
+      throw new InvalidDateFormatException(task.dueDate());
     }
 
     if (task.title().isEmpty()) {
-      throw new InvalidTitleException(task.title());
+      throw new EmptyTaskTitleException();
     }
 
     if (!todoValidator.userHasCategory(userID, task.category())) {
       throw new InvalidTaskCategory(task.category());
     }
 
-    taskRepository.createUserTask(userID, task);
+    return taskRepository.createUserTask(userID, task);
   }
 
   void deleteUserTask(ObjectId userID, ObjectId taskID) throws UserDoesNotExistsException {
@@ -50,7 +51,7 @@ class TaskService {
       throws UserDoesNotExistsException {
 
     if (title.isEmpty()) {
-      throw new InvalidTitleException(title);
+      throw new EmptyTaskTitleException();
     }
 
     taskRepository.updateField(userID, taskID, TaskFields.TITLE, title);
@@ -64,9 +65,9 @@ class TaskService {
   void updateDueDateUserTask(ObjectId userID, ObjectId taskID, String dueDate)
       throws UserDoesNotExistsException {
 
-    if (!dueDate.matches(TaskValidationRegex.DATE_VALIDATION)
+    if (!dueDate.matches(TaskValidationRegex.DATE_FORMAT_VALIDATION)
         || LocalDate.parse(dueDate).isBefore(LocalDate.now())) {
-      throw new InvalidDateException(dueDate);
+      throw new InvalidDateFormatException(dueDate);
     }
 
     taskRepository.updateField(userID, taskID, TaskFields.DUE_DATE, dueDate);
@@ -84,5 +85,9 @@ class TaskService {
 
   List<Task> getAllUserTasks(ObjectId userID) throws UserDoesNotExistsException {
     return taskRepository.findAllUserTasks(userID);
+  }
+
+  List<Task> getCompleteTasks(ObjectId userID) throws UserDoesNotExistsException {
+    return taskRepository.findCompleteUserTasks(userID);
   }
 }

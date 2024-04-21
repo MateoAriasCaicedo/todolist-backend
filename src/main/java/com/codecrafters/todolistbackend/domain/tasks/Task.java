@@ -1,12 +1,11 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
-import com.codecrafters.todolistbackend.db.collections.fields.TaskFields;
+import com.codecrafters.todolistbackend.database.fields.TaskFields;
 import java.util.List;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
-record Task(
-    ObjectId id,
+public record Task(
+    String id,
     String title,
     String description,
     String dueDate,
@@ -16,7 +15,7 @@ record Task(
 
   static Task fromDocument(Document document) {
     return new Task(
-        document.get(TaskFields.ID, ObjectId.class),
+        document.getObjectId(TaskFields.ID).toHexString(),
         document.get(TaskFields.TITLE, String.class),
         document.get(TaskFields.DESCRIPTION, String.class),
         document.get(TaskFields.DUE_DATE, String.class),
@@ -25,7 +24,19 @@ record Task(
         document.getList(TaskFields.TAGS, String.class));
   }
 
-  TaskCreationDTO asCompletedTaskCreationDTO() {
-    return new TaskCreationDTO(title, description, dueDate, category, completed, tags);
+  public String toString() {
+    return id
+        + "\n"
+        + title
+        + "\n"
+        + description
+        + "\n"
+        + dueDate
+        + "\n"
+        + category
+        + "\n"
+        + completed.toString()
+        + "\n"
+        + String.join("-", tags);
   }
 }

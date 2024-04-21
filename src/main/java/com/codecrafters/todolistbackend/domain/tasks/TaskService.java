@@ -1,9 +1,10 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
 import com.codecrafters.todolistbackend.database.fields.TaskFields;
+import com.codecrafters.todolistbackend.domain.tasks.exceptions.EmptyTaskTitleException;
 import com.codecrafters.todolistbackend.domain.tasks.exceptions.InvalidDateFormatException;
 import com.codecrafters.todolistbackend.domain.tasks.exceptions.InvalidTaskCategory;
-import com.codecrafters.todolistbackend.domain.tasks.exceptions.EmptyTaskTitleException;
+import com.codecrafters.todolistbackend.domain.tasks.exceptions.TaskDoesNotExistsException;
 import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.time.LocalDate;
@@ -21,10 +22,13 @@ class TaskService {
     this.todoValidator = todoValidator;
   }
 
-  String addUserTask(ObjectId userID, TaskCreationDTO task) throws UserDoesNotExistsException {
+  String addUserTask(ObjectId userID, TaskCreationDTO task)
+      throws UserDoesNotExistsException,
+          InvalidDateFormatException,
+          InvalidTaskCategory,
+          EmptyTaskTitleException {
 
-    if (!task.dueDate().matches(TaskValidationRegex.DATE_FORMAT_VALIDATION)
-        || LocalDate.parse(task.dueDate()).isBefore(LocalDate.now())) {
+    if (!task.dueDate().matches(TaskValidationRegex.DATE_FORMAT_VALIDATION)) {
       throw new InvalidDateFormatException(task.dueDate());
     }
 
@@ -39,7 +43,8 @@ class TaskService {
     return taskRepository.createUserTask(userID, task);
   }
 
-  void deleteUserTask(ObjectId userID, ObjectId taskID) throws UserDoesNotExistsException {
+  void deleteUserTask(ObjectId userID, ObjectId taskID)
+      throws UserDoesNotExistsException, TaskDoesNotExistsException {
     taskRepository.deleteUserTask(userID, taskID);
   }
 
@@ -89,5 +94,17 @@ class TaskService {
 
   List<Task> getCompleteTasks(ObjectId userID) throws UserDoesNotExistsException {
     return taskRepository.findCompleteUserTasks(userID);
+  }
+
+  List<Task> getTodayTasks(ObjectId userID) throws UserDoesNotExistsException {
+    return taskRepository.getTodayTasks(userID);
+  }
+
+  List<Task> getOverdueTasks(ObjectId userID) {
+    return taskRepository.getOverdueTasks(userID);
+  }
+
+  List<Task> getTasksByCategory(ObjectId userID, String category) {
+    return taskRepository.getTasksByCategory(userID, category);
   }
 }

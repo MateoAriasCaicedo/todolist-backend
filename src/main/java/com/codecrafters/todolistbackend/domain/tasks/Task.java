@@ -10,7 +10,7 @@ public record Task(
     String description,
     String dueDate,
     String category,
-    Boolean completed,
+    boolean completed,
     List<String> tags) {
 
   static Task fromDocument(Document document) {
@@ -35,7 +35,7 @@ public record Task(
         + "\n"
         + category
         + "\n"
-        + completed.toString()
+        + completed
         + "\n"
         + String.join("-", tags);
   }

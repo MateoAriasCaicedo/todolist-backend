@@ -1,13 +1,8 @@
 package com.codecrafters.todolistbackend.exceptions;
 
 import org.bson.types.ObjectId;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /** Thrown when the given user credentials does not exist in the database. */
-@ResponseStatus(
-    value = HttpStatus.BAD_REQUEST,
-    reason = "There is no user with the specified credentials")
 public class UserDoesNotExistsException extends RuntimeException {
 
   /**

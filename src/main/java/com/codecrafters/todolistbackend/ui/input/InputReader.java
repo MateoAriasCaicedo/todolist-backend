@@ -20,4 +20,9 @@ public class InputReader {
       }
     }
   }
+
+  public static String readString() {
+    String readValue = scanner.next();
+    return readValue;
+  }
 }

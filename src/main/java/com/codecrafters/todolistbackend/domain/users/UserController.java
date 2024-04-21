@@ -1,25 +1,22 @@
 package com.codecrafters.todolistbackend.domain.users;
 
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
 
-@RestController
-@RequestMapping("/users")
-class UserController {
+@Controller
+public class UserController {
 
   private final UserService userService;
 
-  UserController(UserService userService) {
+  public UserController(UserService userService) {
     this.userService = userService;
   }
 
-  @PostMapping("/singup")
-  CreatedUserDTO signUpUser(@RequestBody UserCreationDTO user) {
+  public CreatedUserDTO signUpUser(UserCreationDTO user) {
     return userService.signUpUser(user);
   }
 
-  @GetMapping("/singin/{username}/{password}")
-  String singInUser(@PathVariable String username, @PathVariable String password)
+  public String singInUser(String username, String password)
       throws UserDoesNotExistsException, IncorrectPasswordException {
     return userService.singIn(username, password);
   }

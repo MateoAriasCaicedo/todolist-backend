@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class InputReader {
 
-  private static Scanner scanner = new Scanner(System.in);
+  private static final Scanner scanner = new Scanner(System.in);
 
   public static int readIntBetween(int start, int end) {
     while (true) {

@@ -1,15 +1,14 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
 import com.codecrafters.todolistbackend.database.CollectionsProvider;
+import com.codecrafters.todolistbackend.database.FiltersProvider;
 import com.codecrafters.todolistbackend.database.fields.TaskFields;
 import com.codecrafters.todolistbackend.database.fields.UserFields;
-import com.codecrafters.todolistbackend.database.FiltersProvider;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.mongodb.client.result.UpdateResult;
 import lombok.AllArgsConstructor;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -23,7 +22,7 @@ class TaskRepository {
 
   <T> void updateField(ObjectId userID, ObjectId taskID, String field, T value)
       throws UserDoesNotExistsException {
-    var user = collectionsProvider.users().find(FiltersProvider.equalUserID(userID)).first();
+    var user = CollectionsProvider.users().find(FiltersProvider.equalUserID(userID)).first();
 
     if (user == null) throw new UserDoesNotExistsException(taskID);
 
@@ -48,7 +47,7 @@ class TaskRepository {
   }
 
   private UpdateResult insertUserTask(ObjectId userID, Document taskDocument) {
-    return collectionsProvider
+    return CollectionsProvider
         .users()
         .updateOne(
             FiltersProvider.equalUserID(userID), Updates.push(UserFields.TASKS, taskDocument));
@@ -78,7 +77,7 @@ class TaskRepository {
 
   void deleteUserTask(ObjectId userID, ObjectId taskID) {
     var updatedTasks =
-        collectionsProvider
+        CollectionsProvider
             .users()
             .updateOne(
                 FiltersProvider.equalTaskID(userID),
@@ -90,7 +89,7 @@ class TaskRepository {
   }
 
   List<Task> findAllUserTasks(ObjectId userID) throws UserDoesNotExistsException {
-    var user = collectionsProvider.users().find(FiltersProvider.equalTaskID(userID)).first();
+    var user = CollectionsProvider.users().find(FiltersProvider.equalTaskID(userID)).first();
 
     if (user == null) {
       throw new UserDoesNotExistsException(userID);

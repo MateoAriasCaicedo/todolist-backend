@@ -1,7 +1,6 @@
 package com.codecrafters.todolistbackend.database;
 
 import com.mongodb.MongoWriteException;
-
 import java.util.Optional;
 
 public enum DBIndex {

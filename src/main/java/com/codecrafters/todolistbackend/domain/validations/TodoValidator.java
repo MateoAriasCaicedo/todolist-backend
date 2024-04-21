@@ -1,16 +1,16 @@
 package com.codecrafters.todolistbackend.domain.validations;
 
-import com.codecrafters.todolistbackend.domain.categories.CategoryService;
+import com.codecrafters.todolistbackend.domain.categories.CategoryController;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TodoValidator {
 
-  private final CategoryService categoryService;
+  private final CategoryController categoryController;
 
-  public TodoValidator(CategoryService categoryService) {
-    this.categoryService = categoryService;
+  public TodoValidator(CategoryController categoryController) {
+    this.categoryController = categoryController;
   }
 
   /**
@@ -21,6 +21,6 @@ public class TodoValidator {
    * @return True if the user has the given category, false otherwise.
    */
   public boolean userHasCategory(ObjectId userID, String category) {
-    return categoryService.getAllUserCategories(userID).contains(category);
+    return categoryController.getAllUserCategories(userID).contains(category);
   }
 }

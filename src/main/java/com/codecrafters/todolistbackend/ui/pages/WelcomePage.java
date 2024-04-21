@@ -14,7 +14,7 @@ public class WelcomePage implements Page {
   public void render() {
     System.out.println("Hola! Bienvendo a la aplicación");
     System.out.println("¿Qué quieres hacer?");
-    System.out.println("");
+    System.out.println();
     System.out.println("1. Iniciar sesión");
     System.out.println("2. Registrarse");
     System.out.println("3. Salir");
@@ -22,7 +22,8 @@ public class WelcomePage implements Page {
     int value = InputReader.readIntBetween(1, 3);
 
     switch (value) {
-      case 1: loginPage.render();
+      case 1:
+        loginPage.render();
       case 2:
         System.out.println();
     }

@@ -9,14 +9,13 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Controller;
 
 /** Controller that allows operations with user categories. */
-@Controller
 @Slf4j
 public class CategoryController {
 
   private final CategoryService categoryService;
 
-  public CategoryController(CategoryService categoryService) {
-    this.categoryService = categoryService;
+  public CategoryController() {
+    this.categoryService = new CategoryService(new CategoryRepository());
   }
 
   /**

@@ -25,10 +25,7 @@ class CategoriesTest {
   @BeforeAll
   static void setup() {
     testUser = new ObjectId("6618560d03f1180ec0cf0e66");
-    categoryRepository = new CategoryRepository();
-    categoryService = new CategoryService(categoryRepository);
-    categoryController = new CategoryController(categoryService);
-
+    categoryController = new CategoryController();
     deleteTestUserCategories();
   }
 

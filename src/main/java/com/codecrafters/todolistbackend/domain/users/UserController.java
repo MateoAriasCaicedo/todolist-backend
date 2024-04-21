@@ -3,13 +3,12 @@ package com.codecrafters.todolistbackend.domain.users;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import org.springframework.stereotype.Controller;
 
-@Controller
 public class UserController {
 
   private final UserService userService;
 
-  public UserController(UserService userService) {
-    this.userService = userService;
+  public UserController() {
+    this.userService = new UserService(new UserRepository());
   }
 
   public CreatedUserDTO signUpUser(UserCreationDTO user) {

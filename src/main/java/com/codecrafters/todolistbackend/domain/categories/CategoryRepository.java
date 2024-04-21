@@ -16,9 +16,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.springframework.stereotype.Repository;
 
-@Repository
 @Slf4j
 class CategoryRepository {
 

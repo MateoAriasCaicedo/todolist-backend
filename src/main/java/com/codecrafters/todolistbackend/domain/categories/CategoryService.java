@@ -8,9 +8,7 @@ import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.stereotype.Service;
 
-@Service
 @Slf4j
 class CategoryService {
 

@@ -14,11 +14,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Repository;
 
-@Repository
-@AllArgsConstructor
 class TaskRepository {
-
-  private final CollectionsProvider collectionsProvider;
 
   <T> void updateField(ObjectId userID, ObjectId taskID, String field, T value)
       throws UserDoesNotExistsException {

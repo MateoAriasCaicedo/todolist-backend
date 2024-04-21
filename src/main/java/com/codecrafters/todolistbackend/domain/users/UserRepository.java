@@ -10,11 +10,9 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 
-@Slf4j
 class UserRepository {
 
   String createUser(UserCreationDTO user) throws UsernameAlreadyExists, EmailAlreadyExists {
-    log.info("Creating a user with userName: {}", user.userName());
 
     var userDocument =
         user.asMongoDocument()
@@ -43,7 +41,6 @@ class UserRepository {
   }
 
   String findUser(String username, String password) throws UserDoesNotExistsException {
-    log.info("logging in user with username: {} ", username);
 
     Document user =
         com.codecrafters.todolistbackend.database.CollectionsProvider.users()

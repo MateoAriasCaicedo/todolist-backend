@@ -1,9 +1,7 @@
 package com.codecrafters.todolistbackend.domain.users;
 
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
-import org.springframework.stereotype.Service;
 
-@Service
 class UserService {
 
   private final UserRepository userRepository;

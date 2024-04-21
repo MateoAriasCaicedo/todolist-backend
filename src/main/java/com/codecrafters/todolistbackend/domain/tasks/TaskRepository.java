@@ -4,6 +4,7 @@ import com.codecrafters.todolistbackend.database.CollectionsProvider;
 import com.codecrafters.todolistbackend.database.FiltersProvider;
 import com.codecrafters.todolistbackend.database.fields.TaskFields;
 import com.codecrafters.todolistbackend.database.fields.UserFields;
+import com.codecrafters.todolistbackend.domain.categories.exceptions.CategoryDoesNotExistsException;
 import com.codecrafters.todolistbackend.domain.tasks.exceptions.TaskDoesNotExistsException;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.client.model.Updates;
@@ -26,7 +27,7 @@ class TaskRepository {
       throws UserDoesNotExistsException {
     var user = CollectionsProvider.users().find(FiltersProvider.equalUserID(userID)).first();
 
-    if (user == null) throw new UserDoesNotExistsException(taskID);
+    if (user == null) throw new UserDoesNotExistsException(userID);
 
     var task =
         user.getList(UserFields.TASKS, Document.class).stream()
@@ -65,7 +66,7 @@ class TaskRepository {
     return taskDocument.getObjectId(TaskFields.ID).toHexString();
   }
 
-  String createUserTask(ObjectId userID, TaskCreationDTO task, ObjectId taskID)
+  void createUserTask(ObjectId userID, TaskCreationDTO task, ObjectId taskID)
       throws UserDoesNotExistsException {
     var createdTasks = insertUserTask(userID, task.asMongoDocument().append(TaskFields.ID, taskID));
 
@@ -73,7 +74,7 @@ class TaskRepository {
       throw new UserDoesNotExistsException(userID);
     }
 
-    return taskID.toHexString();
+    taskID.toHexString();
   }
 
   void deleteUserTask(ObjectId userID, ObjectId taskID)
@@ -167,7 +168,7 @@ class TaskRepository {
   }
 
   List<Task> getTasksByCategory(ObjectId userID, String category)
-      throws UserDoesNotExistsException {
+      throws UserDoesNotExistsException, CategoryDoesNotExistsException {
     var user = CollectionsProvider.users().find(FiltersProvider.equalTaskID(userID)).first();
 
     if (user == null) {

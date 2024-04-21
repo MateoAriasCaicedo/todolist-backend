@@ -9,6 +9,7 @@ import com.codecrafters.todolistbackend.domain.tasks.exceptions.InvalidDateForma
 import com.codecrafters.todolistbackend.domain.tasks.exceptions.InvalidTaskCategory;
 import com.codecrafters.todolistbackend.domain.tasks.exceptions.TaskDoesNotExistsException;
 import com.codecrafters.todolistbackend.ui.input.InputReader;
+import com.codecrafters.todolistbackend.ui.pages.exceptions.InvalidFormatID;
 import com.codecrafters.todolistbackend.ui.pages.exceptions.UnexpectedInputException;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,18 +60,23 @@ public class MainPage implements Page {
   }
 
   private static void printTasks(List<Task> tasks) {
-    for (Task task : tasks) {
-      System.out.println("\n*---------------------------*");
 
-      System.out.println("ID: " + task.id());
-      System.out.println("Título: " + task.title());
-      System.out.println("Completada: " + (task.completed() ? "Completada" : "En progreso"));
-      System.out.println("Descripción: " + task.description());
-      System.out.println("Fecha vencimiento: " + task.dueDate());
-      System.out.println("Categoría: " + task.category());
-      System.out.println("Etiquetas: " + task.tags().toString());
+    if (tasks.isEmpty()) {
+      System.out.println("No hay tareas para mostrar en esta seccion.");
+    } else {
+      for (Task task : tasks) {
+        System.out.println("\n*---------------------------*");
 
-      System.out.println("*---------------------------*\n");
+        System.out.println("ID: " + task.id());
+        System.out.println("Título: " + task.title());
+        System.out.println("Completada: " + (task.completed() ? "Completada" : "En progreso"));
+        System.out.println("Descripción: " + task.description());
+        System.out.println("Fecha vencimiento: " + task.dueDate());
+        System.out.println("Categoría: " + task.category());
+        System.out.println("Etiquetas: " + task.tags().toString());
+
+        System.out.println("*---------------------------*\n");
+      }
     }
   }
 
@@ -84,10 +90,6 @@ public class MainPage implements Page {
     System.out.println("4. Categoria.");
 
     System.out.println("*---------------------------*\n");
-  }
-
-  private static String readTaskID() {
-    return InputReader.readWithMessage("Que tarea quiere actualizar (ingrese ID):");
   }
 
   @Override
@@ -149,26 +151,33 @@ public class MainPage implements Page {
   }
 
   public void deleteTask() {
-    System.out.println("Ingrese el ID de la tarea que quiere eliminar:");
-    String taskID = InputReader.readString();
     try {
+      String taskID = askForTaskID("Ingrese el ID de la tarea que quiere eliminar:");
       taskController.deleteUserTask(userID, new ObjectId(taskID));
-    } catch (TaskDoesNotExistsException exception) {
-      System.out.println("La tarea que especificaste no existe, por favor inténtalo de nuevo");
+    } catch (Exception exception) {
+      System.out.println("ERROR: " + exception.getMessage());
     }
+  }
+
+  public String askForTaskID(String message) throws InvalidFormatID {
+    String taskID = InputReader.readWithMessage(message);
+    if (taskID.length() != 24) {
+      System.out.println("El task ID no cumple con el formato.");
+      throw new InvalidFormatID();
+    }
+    return taskID;
   }
 
   public void setTaskAsComplete() {
     try {
       taskController.setTaskAsComplete(
           userID,
-          new ObjectId(
-              InputReader.readWithMessage(
-                  "Que tarea quiere establecer como completada (ingrese ID):")));
-    } catch (TaskDoesNotExistsException exception) {
-      System.out.println("La tarea que especificaste no existe, por favor inténtalo de nuevo");
+          new ObjectId(askForTaskID("Que tarea quiere establecer como completada (ingrese ID):")));
+    } catch (Exception exception) {
+      System.out.println("ERROR: " + exception.getMessage());
     }
   }
+
 
   private void printOverdueTasks() {
     printTasks(taskController.getOverdueTasks(userID));
@@ -187,17 +196,21 @@ public class MainPage implements Page {
   }
 
   private void updateTask() {
-    String taskID = readTaskID();
-    printUpdateTaskMessage();
+    try {
+      String taskID = askForTaskID("Que tarea quiere actualizar (ingrese ID):");
+      printUpdateTaskMessage();
 
-    int input = InputReader.readIntBetween(1, 4);
+      int input = InputReader.readIntBetween(1, 4);
 
-    switch (input) {
-      case 1 -> updateTaskTitle(taskID);
-      case 2 -> updateTaskDescription(taskID);
-      case 3 -> updateTaskDueDate(taskID);
-      case 4 -> updateTaskCategory(taskID);
-      default -> throw new UnexpectedInputException(input);
+      switch (input) {
+        case 1 -> updateTaskTitle(taskID);
+        case 2 -> updateTaskDescription(taskID);
+        case 3 -> updateTaskDueDate(taskID);
+        case 4 -> updateTaskCategory(taskID);
+        default -> throw new UnexpectedInputException(input);
+      }
+    } catch (Exception exception) {
+      System.out.println("ERROR: " + exception.getMessage());
     }
   }
 
@@ -206,7 +219,7 @@ public class MainPage implements Page {
       taskController.updateUserTaskTitle(
           userID, new ObjectId(taskID), InputReader.readWithMessage("Ingrese el nuevo titulo:"));
     } catch (TaskDoesNotExistsException exception) {
-      System.out.println("La tarea que especificaste no existe, por favor inténtalo de nuevo");
+      System.out.println("ERROR: La tarea que especificaste no existe, por favor inténtalo de nuevo");
     }
   }
 
@@ -217,7 +230,7 @@ public class MainPage implements Page {
           new ObjectId(taskID),
           InputReader.readWithMessage("Ingrese la nuevo descripcion:"));
     } catch (TaskDoesNotExistsException exception) {
-      System.out.println("La tarea que especificaste no existe, por favor inténtalo de nuevo");
+      System.out.println("ERROR: La tarea que especificaste no existe, por favor inténtalo de nuevo");
     }
   }
 
@@ -228,7 +241,7 @@ public class MainPage implements Page {
           new ObjectId(taskID),
           InputReader.readWithMessage("Ingrese la nueva fecha limite descripcion:"));
     } catch (TaskDoesNotExistsException exception) {
-      System.out.println("La tarea que especificaste no existe, por favor inténtalo de nuevo");
+      System.out.println("ERROR: La tarea que especificaste no existe, por favor inténtalo de nuevo");
     }
   }
 
@@ -237,7 +250,7 @@ public class MainPage implements Page {
       taskController.updateUserTaskCategory(
           userID, new ObjectId(taskID), InputReader.readWithMessage("Ingrese la categoria:"));
     } catch (TaskDoesNotExistsException exception) {
-      System.out.println("La tarea que especificaste no existe, por favor inténtalo de nuevo");
+      System.out.println("ERROR: La tarea que especificaste no existe, por favor inténtalo de nuevo");
     }
   }
 
@@ -246,7 +259,7 @@ public class MainPage implements Page {
       categoryController.createCategory(
           userID, InputReader.readWithMessage("\"Ingrese el nombre de la nueva categoria:"));
     } catch (TaskDoesNotExistsException exception) {
-      System.out.println("La tarea que especificaste no existe, por favor inténtalo de nuevo");
+      System.out.println("ERROR: La tarea que especificaste no existe, por favor inténtalo de nuevo");
     }
   }
 
@@ -254,8 +267,8 @@ public class MainPage implements Page {
     try {
       categoryController.deleteCategory(
           userID, InputReader.readWithMessage("Ingrese el nombre de la categoria a eliminar:"));
-    } catch (TaskDoesNotExistsException exception) {
-      System.out.println("La tarea que especificaste no existe, por favor inténtalo de nuevo");
+    } catch (Exception exception) {
+      System.out.println("ERROR: " + exception.getMessage());
     }
   }
 

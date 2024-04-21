@@ -85,7 +85,7 @@ class TaskService {
       throw new InvalidTaskCategory(category);
     }
 
-    taskRepository.updateField(userID, taskID, TaskFields.DUE_DATE, category);
+    taskRepository.updateField(userID, taskID, TaskFields.CATEGORY, category);
   }
 
   List<Task> getAllUserTasks(ObjectId userID) throws UserDoesNotExistsException {

@@ -4,7 +4,7 @@ import com.codecrafters.todolistbackend.database.fields.TaskFields;
 import java.util.List;
 import org.bson.Document;
 
-record Task(
+public record Task(
     String id,
     String title,
     String description,
@@ -22,5 +22,10 @@ record Task(
         document.get(TaskFields.CATEGORY, String.class),
         document.get(TaskFields.COMPLETED, Boolean.class),
         document.getList(TaskFields.TAGS, String.class));
+  }
+
+  public String toString() {
+    return id + "\n" + title + "\n" + description + "\n" + dueDate + "\n" + category + "\n"
+        + completed.toString() + "\n" + String.join("-", tags);
   }
 }

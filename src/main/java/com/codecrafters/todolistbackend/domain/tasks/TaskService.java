@@ -85,4 +85,8 @@ class TaskService {
   List<Task> getAllUserTasks(ObjectId userID) throws UserDoesNotExistsException {
     return taskRepository.findAllUserTasks(userID);
   }
+
+  List<Task> getCompleteTasks(ObjectId userID) throws UserDoesNotExistsException {
+    return taskRepository.findCompleteUserTasks(userID);
+  }
 }

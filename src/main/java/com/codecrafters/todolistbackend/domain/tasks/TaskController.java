@@ -47,4 +47,8 @@ public class TaskController {
   public List<Task> getAllUserTasks(ObjectId userID) {
     return taskService.getAllUserTasks(userID);
   }
+
+  public List<Task> getCompleteTasks(ObjectId userID) {
+    return taskService.getCompleteTasks(userID);
+  }
 }

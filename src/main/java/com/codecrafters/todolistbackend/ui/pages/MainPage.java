@@ -1,8 +1,19 @@
 package com.codecrafters.todolistbackend.ui.pages;
 
+import com.codecrafters.todolistbackend.domain.tasks.Task;
+import com.codecrafters.todolistbackend.domain.tasks.TaskController;
 import com.codecrafters.todolistbackend.ui.input.InputReader;
+import java.util.List;
+import org.bson.types.ObjectId;
 
 public class MainPage implements Page{
+
+  private final TaskController taskController = new TaskController();
+  private final ObjectId userID;
+
+  public MainPage(String userID) {
+    this.userID = new ObjectId(userID);
+  }
 
   @Override
   public void render() {
@@ -43,7 +54,13 @@ public class MainPage implements Page{
 
   private void printTasksForToday() {}
 
-  private void printCompletedTasks() {}
+  private void printCompletedTasks() {
+    List<Task> tasks = taskController.getCompleteTasks(userID);
+
+    for (Task task: tasks) {
+      System.out.println(task.toString());
+    }
+  }
 
   private void printAllTasks() {}
 

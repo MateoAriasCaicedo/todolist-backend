@@ -11,7 +11,7 @@ public class UserController {
     this.userService = new UserService(new UserRepository());
   }
 
-  public CreatedUserDTO signUpUser(UserCreationDTO user) {
+  public String signUpUser(UserCreationDTO user) {
     return userService.signUpUser(user);
   }
 

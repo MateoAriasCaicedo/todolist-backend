@@ -18,7 +18,7 @@ class UserService {
     return userRepository.findUser(username, password);
   }
 
-  CreatedUserDTO signUpUser(UserCreationDTO user)
+  String signUpUser(UserCreationDTO user)
       throws InvalidPasswordException,
           InvalidEmailException,
           UsernameAlreadyExists,
@@ -32,6 +32,6 @@ class UserService {
       throw new InvalidEmailException(user.email());
     }
 
-    return new CreatedUserDTO(userRepository.createUser(user));
+    return userRepository.createUser(user);
   }
 }

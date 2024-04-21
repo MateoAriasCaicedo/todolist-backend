@@ -1,5 +1,7 @@
 package com.codecrafters.todolistbackend.ui.pages;
 
+import com.codecrafters.todolistbackend.domain.users.UserController;
+import com.codecrafters.todolistbackend.domain.users.UserCreationDTO;
 import com.codecrafters.todolistbackend.ui.input.InputReader;
 
 public class SignupPage implements Page{
@@ -18,15 +20,8 @@ public class SignupPage implements Page{
     System.out.println("Contraseña:");
     String password = InputReader.readString();
 
-
-    boolean validation = validateValues(firstName, lastName, userName, email, password);
-
-    if (validation) {
-      System.out.println("Usuario creado.");
-      goToMainPage();
-    } else {
-      goToFailedValidationPage();
-    }
+    UserCreationDTO newUser = new UserCreationDTO(firstName, lastName, userName, email, password);
+    validateValues(newUser);
   }
 
   private void goToFailedValidationPage() {
@@ -34,12 +29,21 @@ public class SignupPage implements Page{
     failedValidationPage.render();
   }
 
-  private boolean validateValues(String firstName, String lastName, String userName, String email, String password) {
-    return true;
+  private void validateValues(UserCreationDTO newUser) {
+    UserController userController = new UserController();
+
+    try {
+      String userID = userController.signUpUser(newUser);
+      System.out.println("Usuario creado.");
+      goToMainPage(userID);
+    } catch (Exception exception) {
+      System.out.println("ERROR: " + exception.getMessage());
+      goToFailedValidationPage();
+    }
   }
 
-  private void goToMainPage() {
-    MainPage mainPage = new MainPage();
+  private void goToMainPage(String userID) {
+    MainPage mainPage = new MainPage(userID);
     mainPage.render();
   }
 }

@@ -99,4 +99,22 @@ class TaskRepository {
 
     return tasks;
   }
+
+  List<Task> findCompleteUserTasks(ObjectId userID) throws UserDoesNotExistsException {
+    var user = CollectionsProvider.users().find(FiltersProvider.equalTaskID(userID)).first();
+
+    if (user == null) {
+      throw new UserDoesNotExistsException(userID);
+    }
+
+    var tasks = new LinkedList<Task>();
+
+    for (Object document : user.get(UserFields.TASKS, List.class)) {
+      if (Task.fromDocument((Document) document).completed()) {
+        tasks.add(Task.fromDocument((Document) document));
+      }
+    }
+
+    return tasks;
+  }
 }

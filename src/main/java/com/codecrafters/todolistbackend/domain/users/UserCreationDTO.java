@@ -4,7 +4,7 @@ import com.codecrafters.todolistbackend.database.fields.UserFields;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-record UserCreationDTO(
+public record UserCreationDTO(
     String firstName, String lastName, String userName, String email, String password) {
 
   /**

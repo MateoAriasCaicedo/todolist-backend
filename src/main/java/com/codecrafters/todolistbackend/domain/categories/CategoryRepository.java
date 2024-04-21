@@ -16,11 +16,13 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 
 @Slf4j
 class CategoryRepository {
 
-  private static List<String> defaultCategoriesFromDocument(Document defaultCategories)
+  @NotNull
+  private static List<String> defaultCategoriesFromDocument(@NotNull Document defaultCategories)
       throws DefaultCategoriesNotFoundException {
 
     List<String> output =
@@ -34,7 +36,8 @@ class CategoryRepository {
     return output;
   }
 
-  private static List<String> userCategoriesFromDocument(Document user)
+  @NotNull
+  private static List<String> userCategoriesFromDocument(@NotNull Document user)
       throws UserDoesNotContainsCategoriesFieldException {
 
     List<String> userCategories = user.getList(UserFields.CATEGORIES, String.class);
@@ -51,6 +54,13 @@ class CategoryRepository {
   private static Optional<Document> getUser(ObjectId userID) {
     Document user = CollectionsProvider.users().find(FiltersProvider.equalUserID(userID)).first();
     return user != null ? Optional.of(user) : Optional.empty();
+  }
+
+  private static void deleteTasksByCategory(String category) {
+    CollectionsProvider.users()
+        .updateOne(
+            FiltersProvider.tasksCategoryFilter(category),
+            Updates.pull(UserFields.TASKS, new Document(TaskFields.CATEGORY, category)));
   }
 
   void createUserCategory(ObjectId userID, String category) throws UserDoesNotExistsException {
@@ -87,14 +97,6 @@ class CategoryRepository {
 
     log.info("Deleting the user tasks that are associated with the deleted category {}", category);
     deleteTasksByCategory(category);
-  }
-
-  void deleteTasksByCategory(String category) throws UserDoesNotExistsException {
-
-    CollectionsProvider.users()
-        .updateOne(
-            FiltersProvider.tasksCategoryFilter(category),
-            Updates.pull(UserFields.TASKS, new Document(TaskFields.CATEGORY, category)));
   }
 
   List<String> getAllUserCategories(ObjectId userID)

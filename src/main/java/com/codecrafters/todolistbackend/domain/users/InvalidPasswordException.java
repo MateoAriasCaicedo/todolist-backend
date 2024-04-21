@@ -1,11 +1,8 @@
 package com.codecrafters.todolistbackend.domain.users;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+public class InvalidPasswordException extends RuntimeException {
 
-class InvalidPasswordException extends RuntimeException {
-
-  InvalidPasswordException(String password) {
+  public InvalidPasswordException(String password) {
     super("The given password is invalid: " + password);
   }
 }

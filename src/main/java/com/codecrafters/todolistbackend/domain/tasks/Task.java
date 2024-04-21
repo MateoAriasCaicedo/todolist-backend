@@ -25,7 +25,18 @@ public record Task(
   }
 
   public String toString() {
-    return id + "\n" + title + "\n" + description + "\n" + dueDate + "\n" + category + "\n"
-        + completed.toString() + "\n" + String.join("-", tags);
+    return id
+        + "\n"
+        + title
+        + "\n"
+        + description
+        + "\n"
+        + dueDate
+        + "\n"
+        + category
+        + "\n"
+        + completed.toString()
+        + "\n"
+        + String.join("-", tags);
   }
 }

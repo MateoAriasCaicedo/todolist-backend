@@ -5,6 +5,7 @@ import com.codecrafters.todolistbackend.domain.tasks.Task;
 import com.codecrafters.todolistbackend.domain.tasks.TaskController;
 import com.codecrafters.todolistbackend.domain.tasks.TaskCreationDTO;
 import com.codecrafters.todolistbackend.ui.input.InputReader;
+import com.codecrafters.todolistbackend.ui.pages.exceptions.UnexpectedInputException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,62 +17,34 @@ public class MainPage implements Page {
   private final CategoryController categoryController = new CategoryController();
   private final ObjectId userID;
 
-  public MainPage(String userID) {
-    this.userID = new ObjectId(userID);
+  public MainPage(ObjectId userID) {
+    this.userID = userID;
   }
 
-  @Override
-  public void render() {
+  private static void printMainPageMessage() {
     System.out.println("Bienvenido a la pantalla principal");
-    System.out.println("Tareas:");
-    System.out.println("1. Crear tarea.");
-    System.out.println("2. Ver tareas retrasadas.");
-    System.out.println("3. Ver tareas para hoy.");
-    System.out.println("4. Ver tareas completadas.");
-    System.out.println("5. Ver todas las tarea.");
-    System.out.println("6. Marcar tarea como completa.");
-    System.out.println("7. Actualizar tarea.");
-    System.out.println("8. Eliminar tarea.\n");
-    System.out.println("Categorías:");
-    System.out.println("9. Crear categoría.");
-    System.out.println("10. Eliminar categoría.");
-    System.out.println("11. Buscar tareas por categoría.");
-    System.out.println("12. Ver categorías.");
-    System.out.println("13. Cerrara sesion.");
-
-    int value = InputReader.readIntBetween(1, 9);
-
-    switch (value) {
-      case 1:
-        createTask();
-      case 2:
-        printOverdueTasks();
-      case 3:
-        printTasksForToday();
-      case 4:
-        printCompletedTasks();
-      case 5:
-        printAllTasks();
-      case 6:
-        setTaskAsComplete();
-      case 7:
-        updateTask();
-      case 8:
-        deleteTask();
-      case 9:
-        createCategory();
-      case 10:
-        deleteCategory();
-      case 11:
-        printTasksByCategory();
-      case 12:
-        printCategories();
-      case 13:
-        goBackToWelcomePage();
-    }
-    render();
   }
 
+  private static void printTasksOptions() {
+    System.out.println("Tareas:");
+    System.out.println("1. Ver tareas retrasadas.");
+    System.out.println("2. Ver tareas para hoy.");
+    System.out.println("3. Ver tareas completadas.");
+    System.out.println("4. Ver todas las tareas.\n");
+  }
+
+  private static void printCategoriesOptions() {
+    System.out.println("Categorías:");
+    System.out.println("5. Crear categoría.");
+    System.out.println("6. Eliminar categoría.");
+    System.out.println("7. Ver tareas de categoría.");
+    System.out.println("8. Ver categorías.");
+  }
+
+  private static void printOtherOptions() {
+    System.out.println("Otros:");
+    System.out.println("9. Cerrara sesion.");
+    System.out.println("10. Salir.");
   public void createTask() {
     System.out.println("Crear nueva tarea:");
     System.out.println("Titulo:");
@@ -114,9 +87,39 @@ public class MainPage implements Page {
     }
   }
 
-  public void goBackToWelcomePage() {
-    WelcomePage welcomePage = new WelcomePage();
-    welcomePage.render();
+  @Override
+  public PageExitCode render() {
+    printMainPageMessage();
+
+    while (true) {
+      printTasksOptions();
+      printCategoriesOptions();
+      printOtherOptions();
+
+      int value = InputReader.readIntBetween(1, 10);
+
+      if (value == 1) {
+        printOverdueTasks();
+      } else if (value == 2) {
+        printTasksForToday();
+      } else if (value == 3) {
+        printCompletedTasks();
+      } else if (value == 4) {
+        printAllTasks();
+      } else if (value == 5) {
+        createCategory();
+      } else if (value == 6) {
+        deleteCategory();
+      } else if (value == 7) {
+        printCategoryTasks();
+      } else if (value == 8) {
+        printCategories();
+      } else if (value == 9) {
+        return PageExitCode.LOGOUT;
+      } else if (value == 10) {
+        return PageExitCode.EXIT;
+      } else throw new UnexpectedInputException(value);
+    }
   }
 
   private void printOverdueTasks() {
@@ -266,7 +269,4 @@ public class MainPage implements Page {
     List<String> categories = categoryController.getAllUserCategories(userID);
     System.out.println(String.join("\n", categories));
   }
-
-
-
 }

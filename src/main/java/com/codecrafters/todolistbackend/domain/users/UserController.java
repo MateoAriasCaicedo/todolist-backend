@@ -1,7 +1,6 @@
 package com.codecrafters.todolistbackend.domain.users;
 
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
-import org.springframework.stereotype.Controller;
 
 public class UserController {
 
@@ -11,7 +10,11 @@ public class UserController {
     this.userService = new UserService(new UserRepository());
   }
 
-  public String signUpUser(UserCreationDTO user) {
+  public String signUpUser(UserCreationDTO user)
+      throws InvalidPasswordException,
+          InvalidEmailException,
+          UsernameAlreadyExists,
+          EmailAlreadyExists {
     return userService.signUpUser(user);
   }
 

@@ -22,7 +22,11 @@ public class InputReader {
   }
 
   public static String readString() {
-    String readValue = scanner.next();
-    return readValue;
+    return scanner.next();
+  }
+
+  public static String readWithMessage(String message) {
+    System.out.println(message);
+    return scanner.next();
   }
 }

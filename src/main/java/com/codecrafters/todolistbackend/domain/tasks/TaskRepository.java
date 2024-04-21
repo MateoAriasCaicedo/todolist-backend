@@ -4,31 +4,52 @@ import com.codecrafters.todolistbackend.database.CollectionsProvider;
 import com.codecrafters.todolistbackend.database.FiltersProvider;
 import com.codecrafters.todolistbackend.database.fields.TaskFields;
 import com.codecrafters.todolistbackend.database.fields.UserFields;
+import com.codecrafters.todolistbackend.domain.tasks.exceptions.TaskDoesNotExistsException;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import java.util.Optional;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.springframework.stereotype.Repository;
+import org.jetbrains.annotations.NotNull;
 
 class TaskRepository {
 
+  private static Optional<Document> userDocument(ObjectId userID) {
+    Document user = CollectionsProvider.users().find(FiltersProvider.equalUserID(userID)).first();
+
+    if (user == null) {
+      return Optional.empty();
+    }
+
+    return Optional.of(user);
+  }
+
+  @NotNull
+  private static Optional<Document> taskDocument(@NotNull Document user, @NotNull ObjectId taskID) {
+    return user.getList(UserFields.TASKS, Document.class).stream()
+        .filter(taskDocument -> taskDocument.getObjectId(TaskFields.ID).equals(taskID))
+        .findFirst();
+  }
+
   <T> void updateField(ObjectId userID, ObjectId taskID, String field, T value)
       throws UserDoesNotExistsException {
-    var user = CollectionsProvider.users().find(FiltersProvider.equalUserID(userID)).first();
 
-    if (user == null) throw new UserDoesNotExistsException(taskID);
+    Optional<Document> user = userDocument(userID);
 
-    var task =
-        user.getList(UserFields.TASKS, Document.class).stream()
-            .filter(taskDocument -> taskDocument.getObjectId(TaskFields.ID).equals(taskID))
-            .findFirst();
+    if (user.isEmpty()) {
+      throw new UserDoesNotExistsException(taskID);
+    }
 
-    if (task.isEmpty()) throw new TaskDoesNotExistsException(taskID);
+    var task = taskDocument(user.get(), taskID);
+
+    if (task.isEmpty()) {
+      throw new TaskDoesNotExistsException(taskID);
+    }
 
     var taskDocument = task.get();
     taskDocument.remove(field);
@@ -44,8 +65,7 @@ class TaskRepository {
   }
 
   private UpdateResult insertUserTask(ObjectId userID, Document taskDocument) {
-    return CollectionsProvider
-        .users()
+    return CollectionsProvider.users()
         .updateOne(
             FiltersProvider.equalUserID(userID), Updates.push(UserFields.TASKS, taskDocument));
   }
@@ -74,8 +94,7 @@ class TaskRepository {
 
   void deleteUserTask(ObjectId userID, ObjectId taskID) {
     var updatedTasks =
-        CollectionsProvider
-            .users()
+        CollectionsProvider.users()
             .updateOne(
                 FiltersProvider.equalTaskID(userID),
                 Updates.pull(UserFields.TASKS, new Document(TaskFields.ID, taskID)));

@@ -1,28 +1,17 @@
 package com.codecrafters.todolistbackend.domain.users;
 
-import static com.mongodb.client.model.Filters.eq;
-
-import com.codecrafters.todolistbackend.database.CollectionsProvider;
-import com.codecrafters.todolistbackend.database.fields.UserFields;
-import com.codecrafters.todolistbackend.database.FiltersProvider;
 import com.codecrafters.todolistbackend.database.DBIndex;
+import com.codecrafters.todolistbackend.database.FiltersProvider;
+import com.codecrafters.todolistbackend.database.fields.UserFields;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.MongoWriteException;
-
 import java.util.List;
 import java.util.Optional;
-
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.Document;
-import org.springframework.stereotype.Repository;
 
-@Repository
-@AllArgsConstructor
 @Slf4j
 class UserRepository {
-
-  private final CollectionsProvider CollectionsProvider;
 
   String createUser(UserCreationDTO user) throws UsernameAlreadyExists, EmailAlreadyExists {
     log.info("Creating a user with userName: {}", user.userName());
@@ -33,7 +22,7 @@ class UserRepository {
             .append(UserFields.CATEGORIES, List.of());
 
     try {
-      var insertedUser = CollectionsProvider.users().insertOne(userDocument);
+      var insertedUser = com.codecrafters.todolistbackend.database.CollectionsProvider.users().insertOne(userDocument);
       return insertedUser.getInsertedId().asObjectId().getValue().toHexString();
 
     } catch (MongoWriteException exception) {
@@ -55,7 +44,7 @@ class UserRepository {
     log.info("logging in user with username: {} ", username);
 
     Document user =
-        CollectionsProvider.users().find(FiltersProvider.equalUsernameFilter(username)).first();
+        com.codecrafters.todolistbackend.database.CollectionsProvider.users().find(FiltersProvider.equalUsernameFilter(username)).first();
 
     if (user == null) {
       throw new UserDoesNotExistsException(username);

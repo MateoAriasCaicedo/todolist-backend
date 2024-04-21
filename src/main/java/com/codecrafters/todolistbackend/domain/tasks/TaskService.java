@@ -5,18 +5,20 @@ import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.time.LocalDate;
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 
-@Service
-@AllArgsConstructor
 class TaskService {
 
   private final TaskRepository taskRepository;
 
   private final TodoValidator todoValidator;
+
+  public TaskService(TaskRepository taskRepository, TodoValidator todoValidator) {
+    this.taskRepository = taskRepository;
+    this.todoValidator = todoValidator;
+  }
 
   String addUserTask(ObjectId userID, TaskCreationDTO task) throws UserDoesNotExistsException {
 

@@ -1,13 +1,14 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
 import com.codecrafters.todolistbackend.database.fields.TaskFields;
+import com.codecrafters.todolistbackend.domain.tasks.exceptions.InvalidDateFormatException;
+import com.codecrafters.todolistbackend.domain.tasks.exceptions.InvalidTaskCategory;
+import com.codecrafters.todolistbackend.domain.tasks.exceptions.EmptyTaskTitleException;
 import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.time.LocalDate;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
-import org.springframework.stereotype.Service;
 
 class TaskService {
 
@@ -24,11 +25,11 @@ class TaskService {
 
     if (!task.dueDate().matches(TaskValidationRegex.DATE_FORMAT_VALIDATION)
         || LocalDate.parse(task.dueDate()).isBefore(LocalDate.now())) {
-      throw new InvalidDateException(task.dueDate());
+      throw new InvalidDateFormatException(task.dueDate());
     }
 
     if (task.title().isEmpty()) {
-      throw new InvalidTitleException(task.title());
+      throw new EmptyTaskTitleException();
     }
 
     if (!todoValidator.userHasCategory(userID, task.category())) {
@@ -50,7 +51,7 @@ class TaskService {
       throws UserDoesNotExistsException {
 
     if (title.isEmpty()) {
-      throw new InvalidTitleException(title);
+      throw new EmptyTaskTitleException();
     }
 
     taskRepository.updateField(userID, taskID, TaskFields.TITLE, title);
@@ -66,7 +67,7 @@ class TaskService {
 
     if (!dueDate.matches(TaskValidationRegex.DATE_FORMAT_VALIDATION)
         || LocalDate.parse(dueDate).isBefore(LocalDate.now())) {
-      throw new InvalidDateException(dueDate);
+      throw new InvalidDateFormatException(dueDate);
     }
 
     taskRepository.updateField(userID, taskID, TaskFields.DUE_DATE, dueDate);

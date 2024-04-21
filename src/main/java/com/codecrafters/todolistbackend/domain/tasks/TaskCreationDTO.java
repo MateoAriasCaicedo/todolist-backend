@@ -5,7 +5,17 @@ import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-record TaskCreationDTO(
+/**
+ * DTO used for creating a task.
+ *
+ * @param title The task title.
+ * @param description The task description.
+ * @param dueDate The task due date in the format "YYYY-MM-DD".
+ * @param category The task category
+ * @param completed Whether the task is completed or not.
+ * @param tags The task tags associated with the task.
+ */
+public record TaskCreationDTO(
     String title,
     String description,
     String dueDate,

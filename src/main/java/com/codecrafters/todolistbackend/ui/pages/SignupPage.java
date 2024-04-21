@@ -1,49 +1,54 @@
 package com.codecrafters.todolistbackend.ui.pages;
 
-import com.codecrafters.todolistbackend.domain.users.UserController;
-import com.codecrafters.todolistbackend.domain.users.UserCreationDTO;
+import com.codecrafters.todolistbackend.domain.users.*;
 import com.codecrafters.todolistbackend.ui.input.InputReader;
+import java.util.Optional;
+import org.bson.types.ObjectId;
 
-public class SignupPage implements Page{
+public class SignupPage implements Page {
+
+  private final UserController userController = new UserController();
+
+  private static void printSingUpMessage() {
+    System.out.println("Registrarse en la aplicación.");
+  }
 
   @Override
-  public void render() {
-    System.out.println("Registrarse en la aplicación.");
-    System.out.println("Primer nombre:");
-    String firstName = InputReader.readString();
-    System.out.println("Primer apellido:");
-    String lastName = InputReader.readString();
-    System.out.println("Nombre de usuario:");
-    String userName = InputReader.readString();
-    System.out.println("Correo:");
-    String email = InputReader.readString();
-    System.out.println("Contraseña:");
-    String password = InputReader.readString();
+  public PageExitCode render() {
+    printSingUpMessage();
 
-    UserCreationDTO newUser = new UserCreationDTO(firstName, lastName, userName, email, password);
-    validateValues(newUser);
-  }
+    while (true) {
+      String firstName = InputReader.readWithMessage("Nombres:");
+      String lastName = InputReader.readWithMessage("Apellidos");
+      String userName = InputReader.readWithMessage("Nombre de usuario");
+      String email = InputReader.readWithMessage("Correo electrónico:");
+      String password = InputReader.readWithMessage("Contraseña:");
 
-  private void goToFailedValidationPage() {
-    FailedValidationPage failedValidationPage = new FailedValidationPage();
-    failedValidationPage.render();
-  }
+      UserCreationDTO user = new UserCreationDTO(firstName, lastName, userName, email, password);
+      Optional<ObjectId> createdUserID = singUpUser(user);
 
-  private void validateValues(UserCreationDTO newUser) {
-    UserController userController = new UserController();
-
-    try {
-      String userID = userController.signUpUser(newUser);
-      System.out.println("Usuario creado.");
-      goToMainPage(userID);
-    } catch (Exception exception) {
-      System.out.println("ERROR: " + exception.getMessage());
-      goToFailedValidationPage();
+      if (createdUserID.isPresent()) {
+        return new MainPage(createdUserID.get()).render();
+      }
     }
   }
 
-  private void goToMainPage(String userID) {
-    MainPage mainPage = new MainPage(userID);
-    mainPage.render();
+  private Optional<ObjectId> singUpUser(UserCreationDTO user) {
+    try {
+      String userID = userController.signUpUser(user);
+      return Optional.of(new ObjectId(userID));
+    } catch (InvalidPasswordException exception) {
+      System.out.println("La contraseña es inválida, por favor inténtalo de nuevo");
+      return Optional.empty();
+    } catch (InvalidEmailException exception) {
+      System.out.println("El correo electrónico es inválido, por favor inténtalo de nuevo");
+      return Optional.empty();
+    } catch (UsernameAlreadyExists exception) {
+      System.out.println("El nombre de usuario ya existe, por favor elige otro");
+      return Optional.empty();
+    } catch (EmailAlreadyExists exception) {
+      System.out.println("El correo electrónico ya existe, por favor elige otro");
+      return Optional.empty();
+    }
   }
 }

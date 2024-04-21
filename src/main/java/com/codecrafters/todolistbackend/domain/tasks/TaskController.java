@@ -1,19 +1,15 @@
 package com.codecrafters.todolistbackend.domain.tasks;
 
-import java.util.List;
-
-import com.codecrafters.todolistbackend.domain.categories.CategoryController;
 import com.codecrafters.todolistbackend.domain.validations.TodoValidator;
+import java.util.List;
 import org.bson.types.ObjectId;
-import org.springframework.stereotype.Controller;
 
 public class TaskController {
 
   private final TaskService taskService;
 
   public TaskController() {
-    this.taskService =
-        new TaskService(new TaskRepository(), new TodoValidator());
+    this.taskService = new TaskService(new TaskRepository(), new TodoValidator());
   }
 
   public String addUserTask(ObjectId userID, TaskCreationDTO task) {

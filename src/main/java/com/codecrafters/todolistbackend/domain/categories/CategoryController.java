@@ -6,7 +6,6 @@ import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.stereotype.Controller;
 
 /** Controller that allows operations with user categories. */
 @Slf4j

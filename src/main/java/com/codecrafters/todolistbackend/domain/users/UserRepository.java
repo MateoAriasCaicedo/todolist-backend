@@ -22,7 +22,9 @@ class UserRepository {
             .append(UserFields.CATEGORIES, List.of());
 
     try {
-      var insertedUser = com.codecrafters.todolistbackend.database.CollectionsProvider.users().insertOne(userDocument);
+      var insertedUser =
+          com.codecrafters.todolistbackend.database.CollectionsProvider.users()
+              .insertOne(userDocument);
       return insertedUser.getInsertedId().asObjectId().getValue().toHexString();
 
     } catch (MongoWriteException exception) {
@@ -44,7 +46,9 @@ class UserRepository {
     log.info("logging in user with username: {} ", username);
 
     Document user =
-        com.codecrafters.todolistbackend.database.CollectionsProvider.users().find(FiltersProvider.equalUsernameFilter(username)).first();
+        com.codecrafters.todolistbackend.database.CollectionsProvider.users()
+            .find(FiltersProvider.equalUsernameFilter(username))
+            .first();
 
     if (user == null) {
       throw new UserDoesNotExistsException(username);

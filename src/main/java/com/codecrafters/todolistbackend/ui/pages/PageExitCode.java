@@ -1,6 +1,6 @@
 package com.codecrafters.todolistbackend.ui.pages;
 
-public interface Page {
-
-  PageExitCode render();
+public enum PageExitCode {
+  EXIT,
+  LOGOUT
 }

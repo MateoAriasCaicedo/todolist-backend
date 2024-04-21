@@ -1,40 +1,46 @@
 package com.codecrafters.todolistbackend.ui.pages;
 
+import com.codecrafters.todolistbackend.domain.users.IncorrectPasswordException;
 import com.codecrafters.todolistbackend.domain.users.UserController;
+import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.codecrafters.todolistbackend.ui.input.InputReader;
+import java.util.Optional;
+import org.bson.types.ObjectId;
 
 public class LoginPage implements Page {
 
-    @Override
-    public void render() {
-        System.out.println("Inicia sesión en tu cuenta");
-        System.out.println("¿Cuál es tu nombre de usuario?");
-        String userName = InputReader.readString();
-        System.out.println("¿Cuál es tu contraseña?");
-        String password = InputReader.readString();
+  private final UserController userController = new UserController();
 
-        validateValues(userName, password);
-    }
+  private static void printLoginPageMessage() {
+    System.out.println("Inicia sesión en tu cuenta");
+  }
 
-    private void goToFailedValidationPage() {
-        FailedValidationPage failedValidationPage = new FailedValidationPage();
-        failedValidationPage.render();
-    }
+  @Override
+  public PageExitCode render() {
+    printLoginPageMessage();
 
-    private void validateValues(String userName, String password) {
-        UserController userController = new UserController();
-        try {
-            String userID = userController.singInUser(userName, password);
-            System.out.println("Correcto, iniciaste sesión");
-            goToMainPage(userID);
-        } catch (Exception exception) {
-            System.out.println("ERROR: " + exception.getMessage());
-            goToFailedValidationPage();
-        }
-    }
+    while (true) {
+      String userName = InputReader.readWithMessage("Nombre de usuario: ");
+      String password = InputReader.readWithMessage("Contraseña: ");
 
-    private void goToMainPage(String userID) {
-        MainPage mainPage = new MainPage(userID);
-        mainPage.render();
+      Optional<ObjectId> loginID = loginUser(userName, password);
+
+      if (loginID.isPresent()) {
+        return new MainPage(loginID.get()).render();
+      }
     }
+  }
+
+  private Optional<ObjectId> loginUser(String username, String password) {
+    try {
+      String userID = userController.singInUser(username, password);
+      return Optional.of(new ObjectId(userID));
+    } catch (UserDoesNotExistsException exception) {
+      System.out.println("El nombre de usuario no existe, por favor elige uno correcto");
+      return Optional.empty();
+    } catch (IncorrectPasswordException exception) {
+      System.out.println("La contraseña es incorrecta, por favor inténtalo de nuevo");
+      return Optional.empty();
+    }
+  }
 }

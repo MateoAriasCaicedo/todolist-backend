@@ -8,6 +8,7 @@ import com.codecrafters.todolistbackend.domain.tasks.exceptions.TaskDoesNotExist
 import com.codecrafters.todolistbackend.exceptions.UserDoesNotExistsException;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -130,6 +131,60 @@ class TaskRepository {
 
     for (Object document : user.get(UserFields.TASKS, List.class)) {
       if (Task.fromDocument((Document) document).completed()) {
+        tasks.add(Task.fromDocument((Document) document));
+      }
+    }
+
+    return tasks;
+  }
+
+  List<Task> getTodayTasks(ObjectId userID) throws UserDoesNotExistsException {
+    var user = CollectionsProvider.users().find(FiltersProvider.equalTaskID(userID)).first();
+
+    if (user == null) {
+      throw new UserDoesNotExistsException(userID);
+    }
+
+    var tasks = new LinkedList<Task>();
+
+    for (Object document : user.get(UserFields.TASKS, List.class)) {
+      if (LocalDate.parse(Task.fromDocument((Document) document).dueDate()).isEqual(LocalDate.now())) {
+        tasks.add(Task.fromDocument((Document) document));
+      }
+    }
+
+    return tasks;
+  }
+
+  List<Task> getOverdueTasks(ObjectId userID) throws UserDoesNotExistsException {
+    var user = CollectionsProvider.users().find(FiltersProvider.equalTaskID(userID)).first();
+
+    if (user == null) {
+      throw new UserDoesNotExistsException(userID);
+    }
+
+    var tasks = new LinkedList<Task>();
+
+    for (Object document : user.get(UserFields.TASKS, List.class)) {
+      if (LocalDate.parse(Task.fromDocument((Document) document).dueDate()).isBefore(LocalDate.now())) {
+        tasks.add(Task.fromDocument((Document) document));
+      }
+    }
+
+    return tasks;
+  }
+
+  List<Task> getTasksByCategory(ObjectId userID, String category) throws UserDoesNotExistsException {
+    var user = CollectionsProvider.users().find(FiltersProvider.equalTaskID(userID)).first();
+
+    if (user == null) {
+      throw new UserDoesNotExistsException(userID);
+    }
+
+    var tasks = new LinkedList<Task>();
+
+    for (Object document : user.get(UserFields.TASKS, List.class)) {
+      if (Task.fromDocument((Document) document).category().contains(category)) {
         tasks.add(Task.fromDocument((Document) document));
       }
     }

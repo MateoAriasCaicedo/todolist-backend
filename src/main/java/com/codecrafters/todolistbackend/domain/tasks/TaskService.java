@@ -90,4 +90,16 @@ class TaskService {
   List<Task> getCompleteTasks(ObjectId userID) throws UserDoesNotExistsException {
     return taskRepository.findCompleteUserTasks(userID);
   }
+
+  List<Task> getTodayTasks(ObjectId userID) throws UserDoesNotExistsException {
+    return taskRepository.getTodayTasks(userID);
+  }
+
+  List<Task> getOverdueTasks(ObjectId userID) {
+    return taskRepository.getOverdueTasks(userID);
+  }
+
+  List<Task> getTasksByCategory(ObjectId userID, String category) {
+    return taskRepository.getTasksByCategory(userID, category);
+  }
 }
